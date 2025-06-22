@@ -1,19 +1,20 @@
 [tool.poetry]
-name = "mystage"
+package-mode = false
+name = "aggregator"
 version = "0.1.0"
-description = ""
-authors = ["flonix8 <flstanek@googlemail.com>"]
+description = "This component consumes Anomalies from Valkey, save videos and sends reporting data to receivers like ai-cockpit."
+authors = ["witchpou <anett.huebner@starwit.de>"]
 license = "AGPLv3"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
-pydantic = "^2.0.0"
-visionapi = { git = "https://github.com/starwit/vision-api.git", subdirectory = "python/visionapi", tag = "2.0.1" }
+python = "^3.11"
+pydantic = "^2.10.6"
+visionapi = { git = "https://github.com/starwit/vision-api.git", subdirectory = "python/visionapi", tag = "3.1.0" }
 visionlib = { git = "https://github.com/starwit/vision-lib.git", subdirectory = "python", tag = "0.10.0" }
-redis = "^5.0.0"
-pydantic-settings = "^2.0.3"
-prometheus-client = "^0.17.1"
+redis = "^5.2.1"
+pydantic-settings = "^2.8.1"
+prometheus-client = "^0.21.1"
 
 [build-system]
 requires = ["poetry-core"]
