@@ -2,7 +2,7 @@ import logging
 from typing import Any, Dict, NamedTuple
 
 from prometheus_client import Counter, Histogram, Summary
-from visionapi.proto.sae_message_pb2 import SaeMessage
+from visionapi.sae_pb2 import SaeMessage
 
 from .config import AggregatorConfig
 
