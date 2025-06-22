@@ -11,9 +11,9 @@ readme = "README.md"
 python = "^3.11"
 pydantic = "^2.10.6"
 visionapi = { git = "https://github.com/starwit/vision-api.git", subdirectory = "python/visionapi", tag = "3.2.1" }
-redis = "^5.2.1"
+redis = "^6.2.0"
 pydantic-settings = "^2.8.1"
-prometheus-client = "^0.21.1"
+prometheus-client = "^0.22.1"
 
 [build-system]
 requires = ["poetry-core"]
