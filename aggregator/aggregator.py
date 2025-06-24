@@ -3,6 +3,7 @@ from typing import Any, Dict, NamedTuple
 
 from prometheus_client import Counter, Histogram, Summary
 from visionapi.sae_pb2 import SaeMessage
+from visionapi.analytics_pb2 import DetectionCountMessage;
 
 from .config import AggregatorConfig
 
@@ -24,6 +25,9 @@ class Aggregator:
     def __call__(self, input_proto) -> Any:
         return self.get(input_proto)
     
+    def getSomething(self):
+        return "test"
+    
     @GET_DURATION.time()
     def get(self, input_proto):
         sae_msg = self._unpack_proto(input_proto)
@@ -42,4 +46,11 @@ class Aggregator:
     
     @PROTO_SERIALIZATION_DURATION.time()
     def _pack_proto(self, sae_msg: SaeMessage):
-        return sae_msg.SerializeToString()
+        output_msg = self._create_decision_msg(sae_msg)
+        return output_msg.SerializeToString()
+    
+    def _create_decision_msg(self, sae_msg: SaeMessage) -> DetectionCountMessage:
+        output_msg = DetectionCountMessage()
+        output_msg.timestamp_utc_ms = sae_msg.timestamp_utc_ms
+
+        return output_msg
