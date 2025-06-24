@@ -22,14 +22,14 @@ class Aggregator:
         self.config = config
         logger.setLevel(self.config.log_level.value)
 
-    def __call__(self, input_proto) -> Any:
+    def __call__(self, input_proto: bytes) -> Any:
         return self.get(input_proto)
     
     def getSomething(self):
         return "test"
     
     @GET_DURATION.time()
-    def get(self, input_proto):
+    def get(self, input_proto: bytes):
         sae_msg = self._unpack_proto(input_proto)
 
         # Your implementation goes (mostly) here
@@ -38,14 +38,14 @@ class Aggregator:
         return self._pack_proto(sae_msg)
         
     @PROTO_DESERIALIZATION_DURATION.time()
-    def _unpack_proto(self, sae_message_bytes):
+    def _unpack_proto(self, sae_message_bytes: bytes) -> SaeMessage:
         sae_msg = SaeMessage()
         sae_msg.ParseFromString(sae_message_bytes)
 
         return sae_msg
     
     @PROTO_SERIALIZATION_DURATION.time()
-    def _pack_proto(self, sae_msg: SaeMessage):
+    def _pack_proto(self, sae_msg: SaeMessage) -> bytes:
         output_msg = self._create_decision_msg(sae_msg)
         return output_msg.SerializeToString()
     
