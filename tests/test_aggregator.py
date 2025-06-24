@@ -1,8 +1,10 @@
 import pytest
+import json
+import sys
 
 from aggregator.aggregator import Aggregator
 from aggregator.aggregator import AggregatorConfig
-
+from visionapi.sae_pb2 import SaeMessage
 
 @pytest.fixture
 def config():
@@ -14,6 +16,12 @@ def agg(config):
    
 def test_getSomething(agg):
     # Add your test logic here
+
+    with open('tests/test.json') as json_file:
+        json_data = json.load(json_file)
+       
+    print(json.dumps(json_data))
+
     pass
     # Example test logic
     result = "expected_result"  # Replace with actual function to test

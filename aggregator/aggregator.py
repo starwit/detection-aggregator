@@ -2,7 +2,7 @@ import logging
 from typing import Any, Dict, NamedTuple
 
 from prometheus_client import Counter, Histogram, Summary
-from visionapi.sae_pb2 import SaeMessage
+from visionapi.sae_pb2 import SaeMessage, VideoFrame
 from visionapi.analytics_pb2 import DetectionCountMessage;
 
 from .config import AggregatorConfig
@@ -41,7 +41,12 @@ class Aggregator:
     def _unpack_proto(self, sae_message_bytes: bytes) -> SaeMessage:
         sae_msg = SaeMessage()
         sae_msg.ParseFromString(sae_message_bytes)
-
+        sae_msg2 = SaeMessage()
+        sae_msg2.CopyFrom(sae_msg)
+        sae_msg2.frame.CopyFrom(VideoFrame())
+        #for detection in sae_msg2.detections:
+            #logger.debug(f'objectId: {detection.object_id.decode()}')
+        logger.debug(f'Unpacked SAE message: {sae_msg2}')
         return sae_msg
     
     @PROTO_SERIALIZATION_DURATION.time()
@@ -51,6 +56,6 @@ class Aggregator:
     
     def _create_decision_msg(self, sae_msg: SaeMessage) -> DetectionCountMessage:
         output_msg = DetectionCountMessage()
-        output_msg.timestamp_utc_ms = sae_msg.timestamp_utc_ms
+        #output_msg.timestamp_utc_ms.CopyFrom(sae_msg.timestamp_utc_ms)
 
         return output_msg
