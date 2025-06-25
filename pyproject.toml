@@ -10,7 +10,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 pydantic = "^2.10.6"
-visionapi = { git = "https://github.com/starwit/vision-api.git", subdirectory = "python/visionapi", tag = "3.2.1" }
+visionapi = { git = "https://github.com/starwit/vision-api.git", subdirectory = "python/visionapi", tag = "3.2.2" }
 visionlib = { git = "https://github.com/starwit/vision-lib.git", subdirectory = "python", tag = "0.11.2" }
 redis = "^5.2.1"
 pydantic-settings = "^2.8.1"

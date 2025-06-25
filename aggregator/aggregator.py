@@ -106,11 +106,11 @@ class Aggregator:
             detection_count.class_id = chunk.class_id
             detection_count.count = first_chunk_counts.get(chunk, 1)
             if chunk.geo_coordinate is not None:
-                dcm.location.latitude = chunk.geo_coordinate.latitude
-                dcm.location.longitude = chunk.geo_coordinate.longitude
+                detection_count.location.latitude = chunk.geo_coordinate.latitude
+                detection_count.location.longitude = chunk.geo_coordinate.longitude
             if chunk.x is not None and chunk.y is not None:
-                dcm.location.latitude = chunk.x
-                dcm.location.longitude = chunk.y
+                detection_count.location.latitude = chunk.x
+                detection_count.location.longitude = chunk.y
         return dcm
         
     @PROTO_DESERIALIZATION_DURATION.time()
