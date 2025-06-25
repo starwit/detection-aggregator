@@ -9,6 +9,10 @@ This component consumes detection events from Valkey and sends a compressed dete
   - choose environment with `pyenv local 3.11.9`
 - Virtual env (e.g. sudo apt install python3.11-venv)
 - Install Poetry
+    ```
+    sudo apt install pipx
+    pipx install poetry==2.1.3
+    ```
 - Install Docker with compose plugin
 - Running instance of starwit-awareness-engine, anomaly detection and Valkey
 
