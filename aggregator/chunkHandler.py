@@ -3,8 +3,7 @@ from .config import ChunkConfig
 
 class ChunkHandler:
     
-    chunk_diff: ChunkConfig
-    
+
     def __init__(self, config: ChunkConfig) -> None:
         self.chunk_diff = config
         return
@@ -45,7 +44,7 @@ class ChunkHandler:
         if start_ts is None or start_ts == 0:
             return other_ts
         if (other_ts < start_ts):
-            return self.get_ts_period_start(start_ts.time_in_ms - self.chunk_diff.time_in_ms, other_ts)
-        elif (start_ts.time_in_ms <= other_ts.time_in_ms < start_ts.time_in_ms + self.chunk_diff.time_in_ms):
+            return self.get_ts_period_start(start_ts - self.chunk_diff.time_in_ms, other_ts)
+        elif (start_ts <= other_ts < start_ts + self.chunk_diff.time_in_ms):
             return start_ts
-        return self.get_ts_period_start(start_ts.time_in_ms + self.chunk_diff.time_in_ms, other_ts)
+        return self.get_ts_period_start(start_ts + self.chunk_diff.time_in_ms, other_ts)
