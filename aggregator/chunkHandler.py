@@ -44,6 +44,8 @@ class ChunkHandler:
     def get_ts_period_start(self, start_ts: int, other_ts: int) -> int:
         if start_ts is None or start_ts == 0:
             return other_ts
-        if (start_ts.time_in_ms <= other_ts.time_in_ms < start_ts.time_in_ms + self.chunk_diff.time_in_ms):
+        if (other_ts < start_ts):
+            return self.get_ts_period_start(start_ts.time_in_ms - self.chunk_diff.time_in_ms, other_ts)
+        elif (start_ts.time_in_ms <= other_ts.time_in_ms < start_ts.time_in_ms + self.chunk_diff.time_in_ms):
             return start_ts
         return self.get_ts_period_start(start_ts.time_in_ms + self.chunk_diff.time_in_ms, other_ts)
