@@ -51,7 +51,7 @@ class Aggregator:
     @GET_DURATION.time()
     def get(self, input_proto: bytes) -> bytes:
         sae_msg = self._unpack_proto(input_proto)
-        logger.warning('Received SAE message from pipeline')
+        logger.debug('Received SAE message from pipeline')
         self._write_to_buffer(sae_msg)
         return self._pack_proto(sae_msg)
     
@@ -117,7 +117,7 @@ class Aggregator:
     def _unpack_proto(self, sae_message_bytes: bytes) -> SaeMessage:
         sae_msg = SaeMessage()
         sae_msg.ParseFromString(sae_message_bytes)
-        logger.debug(f'Unpacked SAE message: {sae_msg}')
+        #logger.debug(f'Unpacked SAE message: {sae_msg}')
         return sae_msg
     
     @PROTO_SERIALIZATION_DURATION.time()
