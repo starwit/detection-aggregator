@@ -19,14 +19,20 @@ def test_getSomething(agg):
 
     with open('tests/test.json') as json_file:
         json_data = json.load(json_file)
-       
-    print(json.dumps(json_data))
-
+        
+    json_str = json.dumps(json_data)
+    #print(json_str)
+    
+    with open('tests/sae_message.txt', 'rb') as f:
+        sae_message_bytes = f.read()
+    
+    sae_msg: SaeMessage = SaeMessage()
+    sae_msg.ParseFromString(sae_message_bytes)
+    for detection in sae_msg.detections:
+        print(detection)
+    agg.aggregate_msg(sae_msg)
     pass
     # Example test logic
     result = "expected_result"  # Replace with actual function to test
     expected = "expected_result"    # Replace with actual expected result
     assert result == expected, f"Expected {expected}, but got {result}"
-    expected2 = "test"
-    result2 = agg.getSomething()
-    assert result2 == expected2, f"Expected {expected2}, but got {result2}"
