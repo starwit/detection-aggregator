@@ -52,8 +52,7 @@ class Aggregator:
     def get(self, input_proto: bytes) -> bytes:
         sae_msg = self._unpack_proto(input_proto)
         logger.debug('Received SAE message from pipeline')
-        self._write_to_buffer(sae_msg)
-        return self._pack_proto(sae_msg)
+        return self._write_to_buffer(sae_msg)
     
     
     """
@@ -71,7 +70,7 @@ class Aggregator:
                                         buffer size limit is reached, 
                                         otherwise returns None.
     """
-    def _write_to_buffer(self, sae_msg: SaeMessage) -> None:
+    def _write_to_buffer(self, sae_msg: SaeMessage) -> DetectionCountMessage | None:
         # determine appropriate timeslot
         ts_keys = list(self._timeslot_buffer)
         start_ts = None

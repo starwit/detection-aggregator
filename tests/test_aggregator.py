@@ -3,6 +3,7 @@ import pytest
 from aggregator.aggregator import Aggregator
 from aggregator.aggregator import AggregatorConfig
 from visionapi.sae_pb2 import SaeMessage
+from visionapi.analytics_pb2 import DetectionCountMessage, DetectionCount
 
 @pytest.fixture
 def config():
@@ -152,3 +153,37 @@ def test_aggregate_multiple_timeslots(agg):
     result = len(agg._timeslot_buffer)
     expected = 2
     assert result == expected, f"Expected {expected}, but got {result}"
+
+def test_get_method(agg):
+    with open('tests/sae_message.txt', 'rb') as f:
+        sae_message_bytes = f.read()
+    
+    # Call the get method with the SAE message bytes
+    result = agg.get(sae_message_bytes)
+    assert result is None, "Expected result to be None, but got a value"
+    
+    sae_msg: SaeMessage = SaeMessage()
+    sae_msg.ParseFromString(sae_message_bytes)
+    first_timeslot = sae_msg.frame.timestamp_utc_ms
+    
+    sae_msg.frame.timestamp_utc_ms = sae_msg.frame.timestamp_utc_ms + agg.config.chunk.time_in_ms + 1
+    result = agg.get(sae_msg.SerializeToString())
+    assert result is None, "Expected result to be None, but got a value"
+    
+    sae_msg.frame.timestamp_utc_ms = sae_msg.frame.timestamp_utc_ms + agg.config.chunk.time_in_ms + 1
+    result = agg.get(sae_msg.SerializeToString())
+    # Check if the result is of type bytes
+    assert isinstance(result, bytes), "Expected result to be of type bytes"
+    
+    detection_count_msg: DetectionCountMessage = DetectionCountMessage()
+    detection_count_msg.ParseFromString(result)
+    assert isinstance(detection_count_msg, DetectionCountMessage), "Expected result to be a DetectionCountMessage"
+    
+    # Check if the timestamp in the DetectionCountMessage matches the input message
+    assert detection_count_msg.timestamp_utc_ms == first_timeslot, "Timestamps do not match"
+    
+    # Check if the detection counts are aggregated correctly
+    dc = detection_count_msg.detection_counts[0]
+    count = dc.count
+    expected_count = len(sae_msg.detections)
+    assert count == expected_count, f"Expected total count {expected_count}, but got {sum(counts.values())}"
