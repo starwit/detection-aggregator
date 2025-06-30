@@ -1,6 +1,27 @@
 from .chunk import Chunk
 from .config import ChunkConfig
 
+
+"""
+A class to handle the aggregation of chunks based on specified configuration.
+
+Attributes:
+    chunk_diff (ChunkConfig): Configuration object that defines the differences allowed 
+                                for chunk aggregation, including time and geographical coordinates.
+
+Methods:
+    aggregateChunk(current: Chunk, other: Chunk) -> Chunk:
+        Aggregates two chunks based on their attributes and the defined chunk differences.
+    
+    _compareNone_(current, other) -> bool:
+        Compares two values and determines if they are both None or not.
+    
+    equals_time(current: Chunk, other: Chunk) -> bool:
+        Checks if the time of the current chunk is within the allowed range of the other chunk.
+    
+    get_ts_period_start(start_ts: int, other_ts: int) -> int:
+        Determines the start timestamp of a period based on the provided timestamps and chunk differences.
+"""
 class ChunkHandler:
     
 

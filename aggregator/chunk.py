@@ -7,7 +7,7 @@ class Chunk:
         self.time_in_ms = time_in_ms
         self.geo_coordinate = GeoCoordinate()
       
-        if detection is not None:
+        if (detection is not None):
             self.geo_coordinate.CopyFrom(detection.geo_coordinate)
             self.class_id = detection.class_id
             if (detection.bounding_box is not None):
