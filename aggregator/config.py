@@ -13,9 +13,20 @@ class RedisConfig(BaseModel):
     input_stream_prefix: str = 'objecttracker'
     output_stream_prefix: str = 'mystage'
 
+class Coordinates(BaseModel):
+    latitude: float = 10
+    longitude: float = 10    
+class ChunkConfig(BaseModel):
+    buffer_size: int = 3
+    time_in_ms: int = 1000
+    geo_coordinate: Coordinates = Coordinates()
+    x: float = None
+    y: float = None
+
 class AggregatorConfig(BaseSettings):
     log_level: LogLevel = LogLevel.WARNING
     redis: RedisConfig = RedisConfig()
+    chunk: ChunkConfig = ChunkConfig()
     prometheus_port: Annotated[int, Field(ge=1024, le=65536)] = 8000
 
     model_config = SettingsConfigDict(env_nested_delimiter='__')

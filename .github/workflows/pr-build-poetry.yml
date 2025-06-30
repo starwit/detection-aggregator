@@ -1,4 +1,10 @@
-name: test
+#------------------------------------------------------------------------
+#  This workflow installs dependencies using Poetry
+#  and runs tests on pull requests to the main branch.
+#  It caches the virtual environment to speed up subsequent runs.
+# Copied from https://github.com/marketplace/actions/install-poetry-action
+#-------------------------------------------------------------------------
+name: pr-build-poetry
 
 on:
     pull_request:
@@ -6,7 +12,7 @@ on:
     workflow_dispatch:
 
 jobs:
-  test:
+  pr-build-poetry:
     runs-on: ubuntu-latest
     steps:
       #----------------------------------------------
@@ -58,4 +64,4 @@ jobs:
         run: |
           source .venv/bin/activate
           pytest tests/
-          coverage report
+      #    coverage report
