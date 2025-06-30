@@ -13,9 +13,6 @@ Methods:
     aggregateChunk(current: Chunk, other: Chunk) -> Chunk:
         Aggregates two chunks based on their attributes and the defined chunk differences.
     
-    _compareNone_(current, other) -> bool:
-        Compares two values and determines if they are both None or not.
-    
     equals_time(current: Chunk, other: Chunk) -> bool:
         Checks if the time of the current chunk is within the allowed range of the other chunk.
     
@@ -33,10 +30,10 @@ class ChunkHandler:
         same = True
         same = same and current.class_id == other.class_id
         same = same and self.equals_time(current, other)     
-        same = same and self._compareNone_(current, other)
-        same = same and self._compareNone_(current.geo_coordinate, other.geo_coordinate)
-        same = same and self._compareNone_(current.x, other.x)
-        same = same and self._compareNone_(current.y, other.y)
+        same = same and self._compare_none(current, other)
+        same = same and self._compare_none(current.geo_coordinate, other.geo_coordinate)
+        same = same and self._compare_none(current.x, other.x)
+        same = same and self._compare_none(current.y, other.y)
         
         if (same and current.geo_coordinate is not None and other.geo_coordinate is not None):
             same = same and current.geo_coordinate.latitude <= other.geo_coordinate.latitude < current.geo_coordinate.latitude + self.chunk_diff.geo_coordinate.latitude
@@ -51,7 +48,7 @@ class ChunkHandler:
         else:
             return other
 
-    def _compareNone_(self, current, other):
+    def _compare_none(self, current, other):
         if (current is None and other is None):
             return True       
         elif (current is None and other is not None):
