@@ -40,7 +40,6 @@ jobs:
       #  -----  install & configure poetry  -----
       #----------------------------------------------
       - name: Install Poetry
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         uses: snok/install-poetry@v1
         with:
           version: 2.1.3
