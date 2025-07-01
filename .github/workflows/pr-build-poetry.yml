@@ -60,13 +60,13 @@ jobs:
       #----------------------------------------------
       - name: Install project
         run: poetry install --no-interaction
+
       #----------------------------------------------
       #              run test suite
       #----------------------------------------------
       - name: Run tests
         run: |
-          mkdir -p test-results
-          poetry run pytest --junit-xml=test-results.xml
+          poetry run pytest --junit-xml test-results.xml
 
       - name: Test Report
         uses: dorny/test-reporter@v1
