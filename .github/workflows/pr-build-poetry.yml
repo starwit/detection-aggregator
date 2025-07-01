@@ -16,7 +16,7 @@ jobs:
     name: PR Build with Poetry
     runs-on: [self-hosted, linux, X64]
     container:
-        image: starwitorg/base-python-image:0.0.3
+        image: starwitorg/base-python-image:0.0.4
     steps:
       #----------------------------------------------
       #       check-out repo and set-up python
