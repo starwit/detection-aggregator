@@ -16,7 +16,7 @@ jobs:
     name: PR Build with Poetry
     runs-on: [self-hosted, linux, X64]
     container:
-        image: starwitorg/base-python-image:0.0.2
+        image: starwitorg/base-python-image:0.0.3
     steps:
       #----------------------------------------------
       #       check-out repo and set-up python
@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "POETRY_VER=$(poetry version -s)" >> $GITHUB_ENV
           echo "PYTHON_VER=$(python3 --version | cut -d ' ' -f 2)" >> $GITHUB_ENV
-          python3 --version
+          python --version
           poetry --version
 
       #----------------------------------------------
