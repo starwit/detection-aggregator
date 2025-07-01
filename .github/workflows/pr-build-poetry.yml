@@ -63,7 +63,7 @@ jobs:
       - name: Run tests
         run: |
           mkdir -p test-results
-          poetry run pytest --junitxml=test-results/pytest.xml
+          poetry run pytest --junit-xml=test-results.xml
 
       - name: Surface failing tests
         if: always()
