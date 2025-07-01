@@ -24,6 +24,14 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Setup
+        run: |
+          export PATH=/root/.local/bin/:$PATH
+          echo "POETRY_VER=$(poetry version -s)" >> $GITHUB_ENV
+          echo "PYTHON_VER=$(python --version | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          python --version
+          poetry --version
+
       #----------------------------------------------
       #       load cached venv if cache exists
       #----------------------------------------------
@@ -43,7 +51,8 @@ jobs:
       # install your root project, if required
       #----------------------------------------------
       - name: Install project
-        run: poetry install --no-interaction
+        run: |
+          poetry install --no-interaction
       #----------------------------------------------
       #              run test suite
       #----------------------------------------------
