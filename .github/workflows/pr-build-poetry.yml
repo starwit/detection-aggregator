@@ -57,7 +57,5 @@ jobs:
       #----------------------------------------------
       - name: Run tests
         run: |
-          ls -al
-          source .venv/bin/activate
-          pytest tests/
+          poetry run pytest -vvv
       #    coverage report
