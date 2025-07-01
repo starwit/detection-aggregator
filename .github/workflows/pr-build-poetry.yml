@@ -27,8 +27,8 @@ jobs:
       - name: Setup
         run: |
           echo "POETRY_VER=$(poetry version -s)" >> $GITHUB_ENV
-          echo "PYTHON_VER=$(python --version | cut -d ' ' -f 2)" >> $GITHUB_ENV
-          python --version
+          echo "PYTHON_VER=$(python3 --version | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          python3 --version
           poetry --version
 
       #----------------------------------------------
