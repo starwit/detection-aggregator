@@ -57,5 +57,20 @@ jobs:
       #----------------------------------------------
       - name: Run tests
         run: |
-          poetry run pytest -vvv
-      #    coverage report
+          mkdir -p test-results
+          poetry run pytest --junitxml=test-results/pytest-report.xml
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results
+          path: test-results/pytest-report.xml
+  
+      - name: Publish results to UI
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Pytest Results
+          path: test-results/pytest-report.xml
+          reporter: java-junit
