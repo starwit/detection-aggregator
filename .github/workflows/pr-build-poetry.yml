@@ -34,7 +34,7 @@ jobs:
           poetry --version
 
       - name: ls
-        run: ls -al
+        run: ls -al /
 
       - name: pwd
         run: pwd 
