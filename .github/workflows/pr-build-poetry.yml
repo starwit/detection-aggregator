@@ -55,9 +55,9 @@
         - name: Install dependencies 2
           if: steps.venv-cache-init.outputs.cache-hit != 'true'
           run: |
-            cd /cache-init
+            cd /code/cache-init
             poetry install --no-interaction --no-root
-            cp /cache-init/.venv /code/.venv || true
+            cp /code/cache-init/.venv /code/.venv || true
   
         #----------------------------------------------
         # install dependencies if cache does not exist
@@ -88,7 +88,7 @@
           if: steps.venv-cache-init.outputs.cache-hit != 'true'
           uses: actions/cache/save@v4
           with:
-            path: /cache-init/.venv
+            path: /code/cache-init/.venv
             key: venv-${{ runner.os }}-torch
   
     
