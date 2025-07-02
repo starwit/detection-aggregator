@@ -38,7 +38,7 @@ jobs:
       #----------------------------------------------
       - name: Install project
         run: |
-          mv .venv /code/.venv
+          mv .venv/ /code/.venv/
           cd /code
           poetry install --no-interaction -vvv
       #----------------------------------------------
