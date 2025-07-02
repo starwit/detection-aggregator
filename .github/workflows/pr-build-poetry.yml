@@ -33,20 +33,42 @@ jobs:
           python --version
           poetry --version
 
-      #----------------------------------------------
-      #       load cached venv if cache exists
-      #----------------------------------------------
-      - name: Load cached venv
-        id: cached-poetry-dependencies
+      # 📦 First-level cache: .venv directory (fastest)
+      - name: Restore .venv cache
         uses: actions/cache@v4
+        id: venv-cache
         with:
           path: /code/.venv
-          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+          key: venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+
+      # 📦 Second-level cache: Poetry artifacts (slower, but faster than nothing)
+      - name: Restore Poetry download cache
+        if: steps.venv-cache.outputs.cache-hit != 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            /root/.cache/pypoetry
+            /root/.cache/pip
+          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+
+      # 🧪 Install dependencies only if .venv not restored
+      - name: Install dependencies
+        if: steps.venv-cache.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction
+
+      # ✔ Optional: Re-cache .venv for future use
+      - name: Save .venv for next run
+        if: steps.venv-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: /code/.venv
+          key: venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+
       #----------------------------------------------
       # install dependencies if cache does not exist
       #----------------------------------------------
       - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        if: steps.venv-cache.outputs.cache-hit != 'true'
         run: |
           cd /code
           poetry install --no-interaction --no-root
