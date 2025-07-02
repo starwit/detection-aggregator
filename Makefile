@@ -5,7 +5,7 @@ export PACKAGE_NAME=objectdetector
 install: 
 	poetry install
 
-check-settings:
+check-settings: install
 	./check_settings.sh
 
 test: check-settings
