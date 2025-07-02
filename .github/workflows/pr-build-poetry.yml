@@ -18,7 +18,7 @@ jobs:
     container:
         image: starwitorg/base-python-image:0.0.5
         volumes:
-            - ./:.
+            - ./:/code
     steps:
       #----------------------------------------------
       #       check-out repo and set-up python
@@ -40,32 +40,29 @@ jobs:
         id: cached-poetry-dependencies
         uses: actions/cache@v4
         with:
-          path: .venv
+          path: /code/.venv
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
       #----------------------------------------------
       # install dependencies if cache does not exist
       #----------------------------------------------
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root
+        run: |
+          cd /code
+          poetry install --no-interaction --no-root
       #----------------------------------------------
       # install your root project, if required
       #----------------------------------------------
       - name: Install project
         run: |
+          cd /code
           poetry install --no-interaction
       #----------------------------------------------
       #              run test suite
       #----------------------------------------------
       - name: Run tests
         run: |
-          mkdir -p test-results
-          poetry run pytest --junitxml=test-results/pytest.xml
+          cd /code
+          poetry run pytest
 
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: test-results
   
