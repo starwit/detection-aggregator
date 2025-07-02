@@ -33,23 +33,6 @@ jobs:
           python --version
           poetry --version
 
-      # 📦 First-level cache: .venv directory (fastest)
-      - name: Restore .venv cache
-        uses: actions/cache@v4
-        id: venv-cache
-        with:
-          path: /code/.venv
-          key: venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
-
-      #----------------------------------------------
-      # install dependencies if cache does not exist
-      #----------------------------------------------
-      - name: Install dependencies
-        if: steps.venv-cache.outputs.cache-hit != 'true'
-        run: |
-          cd /code
-          poetry install --no-interaction --no-root -vvv
-
       #----------------------------------------------
       # install your root project, if required
       #----------------------------------------------
