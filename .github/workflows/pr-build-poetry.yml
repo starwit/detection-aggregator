@@ -33,20 +33,13 @@ jobs:
           python --version
           poetry --version
 
-      - name: ls
-        run: ls -al /
-
-      - name: pwd
-        run: pwd 
-
       #----------------------------------------------
       # install your root project, if required
       #----------------------------------------------
       - name: Install project
         run: |
-          mv /.venv/ /code/.venv/
           cd /code
-          poetry install --no-interaction --no-root -vvv
+          poetry install --no-interaction -vvv
       #----------------------------------------------
       #              run test suite
       #----------------------------------------------
