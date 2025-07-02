@@ -33,6 +33,9 @@ jobs:
           python --version
           poetry --version
 
+      - name: ls
+        run: ls 
+
       #----------------------------------------------
       # install your root project, if required
       #----------------------------------------------
