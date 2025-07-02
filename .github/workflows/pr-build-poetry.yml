@@ -17,8 +17,7 @@ jobs:
     runs-on: [self-hosted, linux, X64]
     container:
         image: starwitorg/base-python-image:0.0.6
-        volumes:
-            - ./:/code
+
     steps:
       #----------------------------------------------
       #       check-out repo and set-up python
@@ -32,6 +31,8 @@ jobs:
           echo "PYTHON_VER=$(python3 --version | cut -d ' ' -f 2)" >> $GITHUB_ENV
           python --version
           poetry --version
+
+      - run: ls -al /github/home/.cache/pypoetry
 
       #----------------------------------------------
       # install your root project, if required
