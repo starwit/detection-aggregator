@@ -32,7 +32,7 @@ jobs:
           python --version
           poetry --version
 
-      - run: ls -al /github/home/.cache/pypoetry
+      - run: ls -al /github/home/.cache/
 
       #----------------------------------------------
       # install your root project, if required
