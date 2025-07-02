@@ -4,67 +4,73 @@
 #  It caches the virtual environment to speed up subsequent runs.
 # Copied from https://github.com/marketplace/actions/install-poetry-action
 #-------------------------------------------------------------------------
-name: pr-build-poetry
+  name: pr-build-poetry
 
-on:
-    pull_request:
-      branches: [ main ]
-    workflow_dispatch:
-
-jobs:
-  pr-build-poetry:
-    runs-on: ubuntu-latest
-    steps:
-      #----------------------------------------------
-      #       check-out repo and set-up python
-      #----------------------------------------------
-      - name: Check out repository
-        uses: actions/checkout@v4
-      - name: Set up python
-        id: setup-python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      #----------------------------------------------
-      #       load cached venv if cache exists
-      #----------------------------------------------
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v4
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-
-      #----------------------------------------------
-      #  -----  install & configure poetry  -----
-      #----------------------------------------------
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: 2.1.3
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-          virtualenvs-path: .venv
-          installer-parallel: true
-
-
-      #----------------------------------------------
-      # install dependencies if cache does not exist
-      #----------------------------------------------
-      - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root
-      #----------------------------------------------
-      # install your root project, if required
-      #----------------------------------------------
-      - name: Install project
-        run: poetry install --no-interaction
-        
-      #----------------------------------------------
-      #              run test suite
-      #----------------------------------------------
-      - name: Run tests
-        run: |
-          mkdir -p test-results
-          poetry run pytest -vvv
+  on:
+      pull_request:
+        branches: [ main ]
+      workflow_dispatch:
+  
+  jobs:
+    pr-build-poetry:
+      name: PR Build with Poetry
+      runs-on: [self-hosted, linux, X64]
+      container:
+          image: starwitorg/base-python-image:0.0.6
+          volumes:
+              - ./:/code
+      steps:
+        #----------------------------------------------
+        #       check-out repo and set-up python
+        #----------------------------------------------
+        - name: Check out repository
+          uses: actions/checkout@v4
+  
+        - name: Setup
+          run: |
+            echo "POETRY_VER=$(poetry version -s)" >> $GITHUB_ENV
+            echo "PYTHON_VER=$(python3 --version | cut -d ' ' -f 2)" >> $GITHUB_ENV
+            python --version
+            poetry --version
+  
+        # 📦 First-level cache: .venv directory (fastest)
+        - name: Restore .venv cache
+          uses: actions/cache@v4
+          id: venv-cache
+          with:
+            path: /code/.venv
+            key: venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+  
+        #----------------------------------------------
+        # install dependencies if cache does not exist
+        #----------------------------------------------
+        - name: Install dependencies
+          if: steps.venv-cache.outputs.cache-hit != 'true'
+          run: |
+            cd /code
+            poetry install --no-interaction --no-root
+  
+        #----------------------------------------------
+        # install your root project, if required
+        #----------------------------------------------
+        - name: Install project
+          run: |
+            cd /code
+            poetry install --no-interaction
+        #----------------------------------------------
+        #              run test suite
+        #----------------------------------------------
+        - name: Run tests
+          run: |
+            cd /code
+            poetry run pytest
+  
+        # ✔ Optional: Re-cache .venv for future use
+        - name: Save .venv for next run
+          if: steps.venv-cache.outputs.cache-hit != 'true'
+          uses: actions/cache/save@v4
+          with:
+            path: /code/.venv
+            key: venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+  
+    
