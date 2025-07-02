@@ -36,6 +36,9 @@ jobs:
       - name: ls
         run: ls 
 
+      - name: pwd
+        run: pwd 
+
       #----------------------------------------------
       # install your root project, if required
       #----------------------------------------------
