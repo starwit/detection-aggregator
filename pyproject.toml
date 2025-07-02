@@ -15,6 +15,8 @@ visionlib = { git = "https://github.com/starwit/vision-lib.git", subdirectory = 
 redis = "^5.2.1"
 pydantic-settings = "^2.8.1"
 prometheus-client = "^0.21.1"
+torch = "^2.2.1"
+torchvision = "^0.22.0"
 
 [build-system]
 requires = ["poetry-core"]
