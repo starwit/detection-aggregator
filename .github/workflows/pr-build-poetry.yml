@@ -44,8 +44,16 @@ jobs:
       #----------------------------------------------
       - name: Install project
         run: |
+          mv /.venv/ /code/.venv/
           cd /code
           poetry install --no-interaction --no-root -vvv
+          poetry run pytest
+      #----------------------------------------------
+      #              run test suite
+      #----------------------------------------------
+      - name: Run tests
+        run: |
+          cd /code
           poetry run pytest
 
   
