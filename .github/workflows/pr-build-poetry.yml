@@ -38,14 +38,7 @@ jobs:
       #----------------------------------------------
       - name: Install project
         run: |
-          cd /code
-          poetry install --no-interaction -vvv
-      #----------------------------------------------
-      #              run test suite
-      #----------------------------------------------
-      - name: Run tests
-        run: |
-          cd /code
-          poetry run pytest
+          bash -c ./start_make.sh
+
 
   
