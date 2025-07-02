@@ -48,12 +48,4 @@ jobs:
           cd /code
           poetry run pytest
 
-      # ✔ Optional: Re-cache .venv for future use
-      - name: Save .venv for next run
-        if: steps.venv-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: /code/.venv
-          key: venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
-
   
