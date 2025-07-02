@@ -45,7 +45,6 @@ jobs:
       - name: Install project
         run: |
           cd /code
-          poetry config virtualenvs.path /.venv
           poetry install --no-interaction --no-root -vvv
           poetry run pytest
 
