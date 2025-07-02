@@ -16,7 +16,7 @@ jobs:
     name: PR Build with Poetry
     runs-on: [self-hosted, linux, X64]
     container:
-        image: starwitorg/sae-cv-python-image:0.0.3
+        image: starwitorg/sae-cv-python-image:0.0.4
         volumes:
             - ./:/code
     steps:
@@ -38,6 +38,7 @@ jobs:
       #----------------------------------------------
       - name: Install project
         run: |
+          mv .venv /code/.venv
           cd /code
           poetry install --no-interaction -vvv
       #----------------------------------------------
