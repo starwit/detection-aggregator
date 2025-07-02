@@ -17,6 +17,8 @@ jobs:
     runs-on: [self-hosted, linux, X64]
     container:
         image: starwitorg/base-python-image:0.0.5
+        volumes:
+            - ./:.
     steps:
       #----------------------------------------------
       #       check-out repo and set-up python
