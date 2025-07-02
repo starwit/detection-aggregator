@@ -47,7 +47,6 @@ jobs:
           mv /.venv/ /code/.venv/
           cd /code
           poetry install --no-interaction --no-root -vvv
-          poetry run pytest
       #----------------------------------------------
       #              run test suite
       #----------------------------------------------
