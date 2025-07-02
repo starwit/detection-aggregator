@@ -16,7 +16,7 @@ jobs:
     name: PR Build with Poetry
     runs-on: [self-hosted, linux, X64]
     container:
-        image: starwitorg/base-python-image:0.0.6
+        image: starwitorg/sae-cv-python-image:0.0.3
         volumes:
             - ./:/code
     steps:
@@ -41,20 +41,29 @@ jobs:
           path: /code/.venv
           key: venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
 
-      # 📦 Second-level cache: Poetry artifacts (slower, but faster than nothing)
-      - name: Restore Poetry download cache
-        if: steps.venv-cache.outputs.cache-hit != 'true'
-        uses: actions/cache@v4
-        with:
-          path: |
-            /root/.cache/pypoetry
-            /root/.cache/pip
-          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
-
-      # 🧪 Install dependencies only if .venv not restored
+      #----------------------------------------------
+      # install dependencies if cache does not exist
+      #----------------------------------------------
       - name: Install dependencies
         if: steps.venv-cache.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction
+        run: |
+          cd /code
+          poetry install --no-interaction --no-root -vvv
+
+      #----------------------------------------------
+      # install your root project, if required
+      #----------------------------------------------
+      - name: Install project
+        run: |
+          cd /code
+          poetry install --no-interaction -vvv
+      #----------------------------------------------
+      #              run test suite
+      #----------------------------------------------
+      - name: Run tests
+        run: |
+          cd /code
+          poetry run pytest
 
       # ✔ Optional: Re-cache .venv for future use
       - name: Save .venv for next run
@@ -63,28 +72,5 @@ jobs:
         with:
           path: /code/.venv
           key: venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
-
-      #----------------------------------------------
-      # install dependencies if cache does not exist
-      #----------------------------------------------
-      - name: Install dependencies
-        if: steps.venv-cache.outputs.cache-hit != 'true'
-        run: |
-          cd /code
-          poetry install --no-interaction --no-root
-      #----------------------------------------------
-      # install your root project, if required
-      #----------------------------------------------
-      - name: Install project
-        run: |
-          cd /code
-          poetry install --no-interaction
-      #----------------------------------------------
-      #              run test suite
-      #----------------------------------------------
-      - name: Run tests
-        run: |
-          cd /code
-          poetry run pytest
 
   
