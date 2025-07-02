@@ -3,7 +3,7 @@
 export PACKAGE_NAME=objectdetector
 
 install: 
-	poetry install
+	poetry install -vvv
 
 check-settings: install
 	./check_settings.sh
