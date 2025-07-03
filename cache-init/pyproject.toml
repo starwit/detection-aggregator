@@ -1,0 +1,18 @@
+[tool.poetry]
+package-mode = false
+name = "init"
+version = "0.1.0"
+description = "Base cache environment"
+authors = ["witchpou <anett.huebner@starwit.de>"]
+license = "AGPLv3"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pydantic = "2.11.7"
+pydantic-settings = "2.8.1"
+torch = "2.7.1"
+torchvision = "0.22.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "8.4.1"
