@@ -16,7 +16,7 @@ jobs:
     name: PR Build with Poetry
     runs-on: [self-hosted, linux, X64]
     container:
-        image: starwitorg/sae-cv-python-image:0.0.4
+        image: starwitorg/base-image-python:0.0.6
         volumes:
             - ./:/code
 
@@ -43,7 +43,7 @@ jobs:
         run: |
           bash -c ./start_make.sh
 
-      - run: ls -al /github/home/.cache/
+      #- run: ls -al /github/home/.cache/
 
 
 
