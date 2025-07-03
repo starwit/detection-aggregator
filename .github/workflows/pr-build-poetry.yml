@@ -16,7 +16,7 @@ jobs:
     name: PR Build with Poetry
     runs-on: [self-hosted, linux, X64]
     container:
-        image: starwitorg/sae-cv-python-image:0.0.5
+        image: starwitorg/sae-cv-python-image:0.0.4
 
     steps:
       #----------------------------------------------
