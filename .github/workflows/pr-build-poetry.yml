@@ -16,14 +16,16 @@ jobs:
     name: PR Build with Poetry
     runs-on: [self-hosted, linux, X64]
     container:
-        image: starwitorg/base-python-image:0.0.6
+        image: starwitorg/sae-cv-python-image:0.0.4
         volumes:
             - ./:/code
-
     steps:
       #----------------------------------------------
       #       check-out repo and set-up python
       #----------------------------------------------
+      - name: Check out repository
+        uses: actions/checkout@v4
+
       - name: Setup
         run: |
           python --version
@@ -34,7 +36,10 @@ jobs:
       #----------------------------------------------
       - name: Install project
         run: |
+          poetry config cache-dir /root/.cache/pypoetry
+          poetry config data-dir /root/.local/share/pypoetry
           bash -c ./start_make.sh
+
 
 
 
