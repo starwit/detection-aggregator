@@ -37,7 +37,6 @@ jobs:
       - name: Install project
         run: |
           poetry config cache-dir /root/.cache/pypoetry
-          poetry config data-dir /root/.local/share/pypoetry
           bash -c ./start_make.sh
 
 
