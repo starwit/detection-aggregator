@@ -1,22 +1,35 @@
-name: PR Build
+name: pr-build
 
 on:
-  workflow_dispatch:
-
-permissions: read-all
+    pull_request:
+      branches: [ main ]
+    workflow_dispatch:
 
 jobs:
-  build:
-    name: "Build and run docker image"
+  pr-build-poetry:
+    name: PR Build with Poetry
     runs-on: [self-hosted, linux, X64]
-
+    container:
+        image: starwitorg/base-python-image:0.0.6
+        volumes:
+            - /home/githubrunner/.cache/pypoetry:/root/.cache/pypoetry
     steps:
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------
+      - name: Check out repository
+        uses: actions/checkout@v4
 
-    - name: checkout
-      uses: actions/checkout@v4
+      - name: Setup
+        run: |
+          python --version
+          poetry --version
 
-    - name: build docker
-      run: |
-        docker build -t docker.internal.starwit-infra.de/detection-aggregator:tmp .
+      #----------------------------------------------
+      # install your root project, if required
+      #----------------------------------------------
+      - name: Install project
+        run: |
+          poetry config cache-dir /root/.cache/pypoetry
+          bash -c ./start_make.sh
+

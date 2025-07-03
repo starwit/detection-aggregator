@@ -1,12 +1,14 @@
-.PHONY: install test
+.PHONY: check-settings install test
 
 export PACKAGE_NAME=objectdetector
 
-install: 
+default: install
+
+install: check-settings
 	poetry install -vvv
 
-check-settings: install
+check-settings:
 	./check_settings.sh
 
-test: check-settings
+test: install
 	poetry run pytest

@@ -19,7 +19,6 @@ tensorrt-cu12 = {version = "^10.0.1", source = "nvidia"}
 tensorrt-cu12-libs = {version = "^10.0.1", source = "nvidia"}
 tensorrt-cu12-bindings = {version = "^10.0.1", source = "nvidia"}
 ultralytics = "^8.2.15"
-pytest = "8.4.1"
 
 [[tool.poetry.source]]
 name = "nvidia"
@@ -29,3 +28,6 @@ priority = "supplemental"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "8.4.1"
