@@ -32,7 +32,7 @@ jobs:
           python --version
           poetry --version
 
-      - run: ln -s /root/.cache/ /github/home/.cache/
+      - run: ln -s /github/home/.cache/ /root/.cache/ 
 
       - run: ls -al /github/home/.cache/
 
