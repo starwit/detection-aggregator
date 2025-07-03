@@ -33,7 +33,7 @@ jobs:
           poetry --version
 
       - run: |
-          find /root
+          ls -al /root
           ln -s /root/.cache /github/home/.cache 
 
       #----------------------------------------------
