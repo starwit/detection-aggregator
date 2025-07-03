@@ -32,9 +32,9 @@ jobs:
           python --version
           poetry --version
 
-      - run: ln -s /github/home/.cache/ /root/.cache/ 
-
-      - run: ls -al /github/home/.cache/
+      - run: |
+          ln -s /github/home/.cache/ /root/.cache/ 
+          ls -al /github/home/.cache/
 
       #----------------------------------------------
       # install your root project, if required
