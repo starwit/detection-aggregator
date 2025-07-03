@@ -5,6 +5,8 @@ export PACKAGE_NAME=objectdetector
 
 export PATH=/root/.local/bin/:$PATH
 cd /code
+echo "test code volume link"
+ls -al
 
 make test
 
