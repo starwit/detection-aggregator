@@ -8,17 +8,13 @@ license = "AGPLv3"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "3.12.*"
 visionapi = { git = "https://github.com/starwit/vision-api.git", subdirectory = "python/visionapi", tag = "3.2.2" }
 visionlib = { git = "https://github.com/starwit/vision-lib.git", subdirectory = "python", tag = "0.11.2" }
-redis = "^5.2.1"
+redis = "5.2.1"
 pydantic = "2.11.7"
 pydantic-settings = "2.8.1"
-prometheus-client = "^0.21.1"
-tensorrt-cu12 = {version = "^10.0.1", source = "nvidia"}
-tensorrt-cu12-libs = {version = "^10.0.1", source = "nvidia"}
-tensorrt-cu12-bindings = {version = "^10.0.1", source = "nvidia"}
-ultralytics = "^8.2.15"
+prometheus-client = "0.21.1"
 
 [[tool.poetry.source]]
 name = "nvidia"
