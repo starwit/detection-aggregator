@@ -33,8 +33,8 @@ jobs:
           poetry --version
 
       - run: |
-          ln -s /github/home/.cache /root/.cache
-          find .
+          find /root
+          ln -s /root/.cache /github/home/.cache 
 
       #----------------------------------------------
       # install your root project, if required
