@@ -674,4 +674,4 @@ subdirectory = "python"
 [metadata]
 lock-version = "2.1"
 python-versions = "3.12.*"
-content-hash = "2af76094906382e379543d84088ab7fabf834edda8538c077d54cda47a1811cd"
+content-hash = "48303b5e00e2d72107877145bd26382e3e74000ce7284569e8de650249c29e62"
