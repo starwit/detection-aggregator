@@ -18,23 +18,21 @@ OBJECT_COUNTER = Counter('aggregator_object_counter', 'How many detections have 
 PROTO_SERIALIZATION_DURATION = Summary('aggregator_proto_serialization_duration', 'The time it takes to create a serialized output proto')
 PROTO_DESERIALIZATION_DURATION = Summary('aggregator_proto_deserialization_duration', 'The time it takes to deserialize an input proto')
 
-class Aggregator:
-    """
-    Aggregator class for processing and aggregating detection messages.
+"""
+Aggregator class for processing and aggregating detection messages.
 
-    This class is responsible for handling incoming SAE messages, 
-    aggregating detections over specified time slots. It provides methods to 
-    unpack incoming messages, write to a buffer, and create 
-    detection count messages for further processing.
+This class is responsible for handling incoming SAE messages, 
+aggregating detections over specified time slots. It provides methods to 
+unpack incoming messages, write to a buffer, and create 
+detection count messages for further processing.
 
-    Attributes:
-        config (AggregatorConfig): Configuration settings for the aggregator.
-        _chunk_handler (ChunkHandler): Handler for managing chunk operations.
-        _timeslot_buffer (dict[int, dict[Chunk, int]]): Buffer for storing 
-            chunks of detections indexed by time slots.
-        _buffer_size (int): Maximum size of the timeslot buffer.
-    """
-
+Attributes:
+    config (AggregatorConfig): Configuration settings for the aggregator.
+    _chunk_handler (ChunkHandler): Handler for managing chunk operations.
+    _timeslot_buffer (dict[int, dict[Chunk, int]]): Buffer for storing 
+        chunks of detections indexed by time slots.
+    _buffer_size (int): Maximum size of the timeslot buffer.
+"""
     # ... rest of the class code ...
 class Aggregator:
     def __init__(self, config: AggregatorConfig) -> None:
