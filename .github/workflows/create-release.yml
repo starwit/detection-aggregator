@@ -36,6 +36,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Install GH CLI
+        uses: dev-hanz-ops/install-gh-cli-action@v0.2.1        
+        
       - name: create new version in pyproject.toml
         run: |
           poetry version $VERSION
@@ -92,6 +95,8 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
+          sbom: true
+          provenance: mode=max
           push: true
           tags: ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_VERSION }}
   

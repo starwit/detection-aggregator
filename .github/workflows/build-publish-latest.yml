@@ -37,6 +37,8 @@ jobs:
       with:
         context: .
         file: ./Dockerfile
+        sbom: true
+        provenance: mode=max
         push: true
         tags: ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_VERSION }}-${{ github.run_number }}
 
