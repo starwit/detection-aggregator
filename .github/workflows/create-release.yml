@@ -54,7 +54,7 @@ jobs:
       - name: Create github release
         run: | 
           APP_VERSION=$(cat pyproject.toml | grep "version" | cut -d'=' -f2 | xargs echo -n)
-          gh release create $APP_VERSION -F README.md
+          gh release create $APP_VERSION -F README.md --title "${VERSION}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ inputs.versionChoice }}
@@ -70,11 +70,13 @@ jobs:
 
       - name: build and push docker
         run: |
-          DOCKER_VERSION=$(cat pyproject.toml | grep "version" | cut -d'=' -f2 | xargs echo -n)
-          docker build -t ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:tmp .
-          docker tag ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:tmp ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:$DOCKER_VERSION
-          docker push ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:$DOCKER_VERSION
-          docker rmi ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:tmp
-          docker rmi ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:$DOCKER_VERSION
-          docker buildx prune -af
+          echo "DOCKER_VERSION=$(cat pyproject.toml | grep "version" | cut -d'=' -f2 | xargs echo -n)"  >> $GITHUB_ENV
+    
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./dockerfile
+          push: true
+          tags: ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_VERSION }}
   
