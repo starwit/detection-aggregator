@@ -21,8 +21,8 @@ env:
   DOCKERHUB_ORG: starwitorg   
 
 jobs:
-  pr-build-poetry:
-    name: PR Build with Poetry
+  create-release:
+    name: create new release
     runs-on: [self-hosted, linux, X64]
     container:
       image: starwitorg/base-python-image:0.0.7
@@ -63,7 +63,16 @@ jobs:
           APP_VERSION=$(cat pyproject.toml | grep "version" | cut -d'=' -f2 | xargs echo -n)
           gh release create $APP_VERSION -F README.md --title "${APP_VERSION}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish_docker:
+    name: "Build and publish docker"
+    needs: create-release
+    runs-on: [self-hosted, linux, X64]
+    
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
