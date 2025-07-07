@@ -1,0 +1,4 @@
+#!/bin/bash
+
+mkdir -p /etc/starwit/detection-aggregator
+mkdir -p /opt/starwit/detection-aggregator

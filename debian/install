@@ -1,0 +1,7 @@
+settings.yaml /etc/starwit/detection-aggregator
+main.py /opt/starwit/detection-aggregator
+
+requirements.txt /opt/starwit/detection-aggregator
+
+aggregator /opt/starwit/detection-aggregator
+debian/detection-aggregator.service /usr/lib/systemd/system/

@@ -8,7 +8,7 @@ license = "AGPLv3"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.10"
 pydantic = "^2.10.6"
 visionapi = { git = "https://github.com/starwit/vision-api.git", subdirectory = "python/visionapi", tag = "3.2.2" }
 visionlib = { git = "https://github.com/starwit/vision-lib.git", subdirectory = "python", tag = "0.11.2" }
@@ -20,7 +20,9 @@ prometheus-client = "^0.21.1"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-
 [tool.poetry.group.dev.dependencies]
 pytest = "8.4.1"
 coverage = "7.9.1"
+
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.8"

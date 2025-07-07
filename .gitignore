@@ -6,5 +6,9 @@ cache
 *.pt
 .vscode
 *.yaml
+!.github/workflows/*.yaml
 !settings.template.yaml
 .python-version
+target
+dist
+env.sh
