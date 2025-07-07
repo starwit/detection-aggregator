@@ -33,3 +33,28 @@ jobs:
           poetry config cache-dir /root/.cache/pypoetry
           bash -c ./start_make.sh
 
+  apt-build:
+    name: package APT
+    runs-on: [self-hosted, linux, X64]
+    container:
+        image: starwitorg/debian-packaging:0.0.2
+        env:
+          PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD_FLAT }}
+          GPG_KEY: ${{ secrets.OSSRH_GPG_SECRET_KEY_B64 }}
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: build apt package
+        run: |
+            echo "Build APT package"
+            export PATH=/root/.local/bin/:$PATH
+            bash -c ./start_make.sh
+            echo "VERSION=$(poetry version -s)" >> $GITHUB_ENV
+            echo "Finish building APT package"
+      - name: test poetry builds
+        run: |
+            export PATH=/root/.local/bin/:$PATH
+            #poetry install
+            #poetry build  
+
