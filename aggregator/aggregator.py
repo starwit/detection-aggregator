@@ -18,30 +18,28 @@ OBJECT_COUNTER = Counter('aggregator_object_counter', 'How many detections have 
 PROTO_SERIALIZATION_DURATION = Summary('aggregator_proto_serialization_duration', 'The time it takes to create a serialized output proto')
 PROTO_DESERIALIZATION_DURATION = Summary('aggregator_proto_deserialization_duration', 'The time it takes to deserialize an input proto')
 
-class Aggregator:
-    """
-    Aggregator class for processing and aggregating detection messages.
+"""
+Aggregator class for processing and aggregating detection messages.
 
-    This class is responsible for handling incoming SAE messages, 
-    aggregating detections over specified time slots. It provides methods to 
-    unpack incoming messages, write to a buffer, and create 
-    detection count messages for further processing.
+This class is responsible for handling incoming SAE messages, 
+aggregating detections over specified time slots. It provides methods to 
+unpack incoming messages, write to a buffer, and create 
+detection count messages for further processing.
 
-    Attributes:
-        config (AggregatorConfig): Configuration settings for the aggregator.
-        __chunkHandler (ChunkHandler): Handler for managing chunk operations.
-        _timeslot_buffer (dict[int, dict[Chunk, int]]): Buffer for storing 
-            chunks of detections indexed by time slots.
-        __buffer_size (int): Maximum size of the timeslot buffer.
-    """
-
+Attributes:
+    config (AggregatorConfig): Configuration settings for the aggregator.
+    _chunk_handler (ChunkHandler): Handler for managing chunk operations.
+    _timeslot_buffer (dict[int, dict[Chunk, int]]): Buffer for storing 
+        chunks of detections indexed by time slots.
+    _buffer_size (int): Maximum size of the timeslot buffer.
+"""
     # ... rest of the class code ...
 class Aggregator:
     def __init__(self, config: AggregatorConfig) -> None:
         self.config = config
-        self.__chunkHandler = ChunkHandler(config.chunk)
+        self._chunk_handler = ChunkHandler(config.chunk)
         self._timeslot_buffer = dict[int, dict[Chunk, int]]()
-        self.__buffer_size = config.chunk.buffer_size
+        self._buffer_size = config.chunk.buffer_size
         logger.setLevel(self.config.log_level.value)
 
     def __call__(self, input_proto: bytes) -> Any:
@@ -76,12 +74,12 @@ class Aggregator:
         start_ts = None
         if len(ts_keys) > 0:
             start_ts = sorted(ts_keys)[-1]
-        key = self.__chunkHandler.get_ts_period_start(start_ts, sae_msg.frame.timestamp_utc_ms)
+        key = self._chunk_handler.get_ts_period_start(start_ts, sae_msg.frame.timestamp_utc_ms)
         
         # aggregate detections to chunks
         self._aggregate_msg(key, sae_msg.detections)
         
-        if len(self._timeslot_buffer) >= self.__buffer_size:
+        if len(self._timeslot_buffer) >= self._buffer_size:
             logger.debug(f'Buffer size {len(self._timeslot_buffer)} reached, writing to redis')
             sorted_dict = sorted(self._timeslot_buffer.items())
             
@@ -148,7 +146,7 @@ class Aggregator:
                 newChunk = Chunk(ts_in_ms, detection)
                 added = False
                 for chunk in chunks:
-                    newChunk = self.__chunkHandler.aggregateChunk(chunk, newChunk)
+                    newChunk = self._chunk_handler.aggregateChunk(chunk, newChunk)
                     if (chunk == newChunk):
                         counts[chunk] = counts.get(chunk, 0) + 1
                         added = True

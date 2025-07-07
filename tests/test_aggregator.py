@@ -19,7 +19,7 @@ def agg2(config):
    
 def test_aggregate_msg(agg):
     
-    with open('tests/sae_message.txt', 'rb') as f:
+    with open('tests/sae_message.bin', 'rb') as f:
         sae_message_bytes = f.read()
     
     sae_msg: SaeMessage = SaeMessage()
@@ -43,7 +43,7 @@ def test_aggregate_msg(agg):
     assert result == expected, f"Expected {expected}, but got {result}"
     
 def test_aggregate2_msg(agg2):
-    with open('tests/sae_message.txt', 'rb') as f:
+    with open('tests/sae_message.bin', 'rb') as f:
         sae_message_bytes = f.read()
     
     sae_msg: SaeMessage = SaeMessage()
@@ -78,7 +78,7 @@ def test_aggregate2_msg(agg2):
     assert result == expected, f"Expected {expected}, but got {result}"
     
 def test_write_to_buffer(agg):
-    with open('tests/sae_message.txt', 'rb') as f:
+    with open('tests/sae_message.bin', 'rb') as f:
         sae_message_bytes = f.read()
     
     sae_msg: SaeMessage = SaeMessage()
@@ -115,7 +115,7 @@ def test_write_to_buffer(agg):
     
 
 def test_unpacked_proto(agg):
-    with open('tests/sae_message.txt', 'rb') as f:
+    with open('tests/sae_message.bin', 'rb') as f:
         sae_message_bytes = f.read()
 
     sae_msg = agg._unpack_proto(sae_message_bytes)
@@ -124,7 +124,7 @@ def test_unpacked_proto(agg):
     assert len(sae_msg.detections) > 0, "No detections found in unpacked message"
 
 def test_packed_proto(agg):
-    with open('tests/sae_message.txt', 'rb') as f:
+    with open('tests/sae_message.bin', 'rb') as f:
         sae_message_bytes = f.read()
     
     sae_msg: SaeMessage = SaeMessage()
@@ -140,7 +140,7 @@ def test_packed_proto(agg):
     assert len(packed_bytes) > 0, "Packed message is empty"
 
 def test_aggregate_multiple_timeslots(agg):
-    with open('tests/sae_message.txt', 'rb') as f:
+    with open('tests/sae_message.bin', 'rb') as f:
         sae_message_bytes = f.read()
     
     sae_msg: SaeMessage = SaeMessage()
@@ -155,7 +155,7 @@ def test_aggregate_multiple_timeslots(agg):
     assert result == expected, f"Expected {expected}, but got {result}"
 
 def test_get_method(agg):
-    with open('tests/sae_message.txt', 'rb') as f:
+    with open('tests/sae_message.bin', 'rb') as f:
         sae_message_bytes = f.read()
     
     # Call the get method with the SAE message bytes

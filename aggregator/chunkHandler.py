@@ -1,6 +1,24 @@
 from .chunk import Chunk
 from .config import ChunkConfig
 
+
+"""
+A class to handle the aggregation of chunks based on specified configuration.
+
+Attributes:
+    chunk_diff (ChunkConfig): Configuration object that defines the differences allowed 
+                                for chunk aggregation, including time and geographical coordinates.
+
+Methods:
+    aggregateChunk(current: Chunk, other: Chunk) -> Chunk:
+        Aggregates two chunks based on their attributes and the defined chunk differences.
+    
+    equals_time(current: Chunk, other: Chunk) -> bool:
+        Checks if the time of the current chunk is within the allowed range of the other chunk.
+    
+    get_ts_period_start(start_ts: int, other_ts: int) -> int:
+        Determines the start timestamp of a period based on the provided timestamps and chunk differences.
+"""
 class ChunkHandler:
     
 
@@ -12,12 +30,12 @@ class ChunkHandler:
         same = True
         same = same and current.class_id == other.class_id
         same = same and self.equals_time(current, other)     
-        same = same and self._compareNone_(current, other)
-        same = same and self._compareNone_(current.geo_coordinate, other.geo_coordinate)
-        same = same and self._compareNone_(current.x, other.x)
-        same = same and self._compareNone_(current.y, other.y)
+        same = same and self._compare_none(current, other)
+        same = same and self._compare_none(current.geo_coordinate, other.geo_coordinate)
+        same = same and self._compare_none(current.x, other.x)
+        same = same and self._compare_none(current.y, other.y)
         
-        if (same and current.geo_coordinate is not None and other.geo_coordinate is not None):
+        if (same and self.chunk_diff.geo_coordinate is not None and current.geo_coordinate is not None and other.geo_coordinate is not None):
             same = same and current.geo_coordinate.latitude <= other.geo_coordinate.latitude < current.geo_coordinate.latitude + self.chunk_diff.geo_coordinate.latitude
             same = same and current.geo_coordinate.longitude <= other.geo_coordinate.longitude < current.geo_coordinate.longitude + self.chunk_diff.geo_coordinate.longitude
         
@@ -30,7 +48,7 @@ class ChunkHandler:
         else:
             return other
 
-    def _compareNone_(self, current, other):
+    def _compare_none(self, current, other):
         if (current is None and other is None):
             return True       
         elif (current is None and other is not None):

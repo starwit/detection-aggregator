@@ -1,9 +1,9 @@
-.PHONY: install build-deb clean
+.PHONY: install build-deb clean check-settings test
 
 export PACKAGE_NAME=detection-aggregator
 
-install:
-	poetry install
+install: check-settings
+	poetry install -vvv
 
 check-settings:
 	./check_settings.sh
@@ -24,6 +24,9 @@ build-deb: check-settings
 
 	mkdir -p target
 	mv ../${PACKAGE_NAME}_* target/
+
+test: install
+	poetry run pytest
 
 clean:
 	rm -rf dist
