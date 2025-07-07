@@ -1,7 +1,7 @@
 [tool.poetry]
 package-mode = false
 name = "aggregator"
-version = "0.1.0"
+version = "0.1.1"
 description = "This component consumes Anomalies from Valkey, save videos and sends reporting data to receivers like ai-cockpit."
 authors = ["witchpou <anett.huebner@starwit.de>"]
 license = "AGPLv3"
