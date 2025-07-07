@@ -5,44 +5,37 @@ on:
 
 permissions: read-all
 
+env:
+  IMAGE_NAME: detection-aggregator
+  DOCKERHUB_USERNAME: starwit
+  DOCKERHUB_ORG: starwitorg  
+
 jobs:
   build:
     name: "Build and run docker image"
     runs-on: [self-hosted, linux, X64]
 
     steps:
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
     - name: checkout
       uses: actions/checkout@v4
 
-    - name: Login internal docker registry
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
-        registry: docker.internal.starwit-infra.de
-        username: ${{ secrets.DOCKER_INTERNAL_USERNAME }}
-        password: ${{ secrets.DOCKER_INTERNAL_PASSWORD }}
+        username: ${{ env.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: build docker
-      run: |
-        docker build -t docker.internal.starwit-infra.de/detection-aggregator:tmp .
-
-  publish_docker:
-    name: "Build and publish docker"
-    needs: build
-    runs-on: [self-hosted, linux, X64]
-
-    steps:
-    - name: Login internal docker registry
-      uses: docker/login-action@v3
-      with:
-        registry: docker.internal.starwit-infra.de
-        username: ${{ secrets.DOCKER_INTERNAL_USERNAME }}
-        password: ${{ secrets.DOCKER_INTERNAL_PASSWORD }}
-
-    - name: push docker versioned
+    - name: build and push docker
       run: |
         DOCKER_VERSION=$(cat pyproject.toml | grep "version" | cut -d'=' -f2 | xargs echo -n)
-        docker tag docker.internal.starwit-infra.de/detection-aggregator:tmp docker.internal.starwit-infra.de/detection-aggregator:$DOCKER_VERSION
-        docker push docker.internal.starwit-infra.de/detection-aggregator:$DOCKER_VERSION
+        docker build -t ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:tmp .
+        docker tag ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:tmp ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:$DOCKER_VERSION
+        docker push ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:$DOCKER_VERSION
+        docker rmi ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:tmp
+        docker rmi ${{ env.DOCKERHUB_ORG }}/${{ env.IMAGE_NAME }}:$DOCKER_VERSION
+        docker buildx prune -af
+
+
