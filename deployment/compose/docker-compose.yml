@@ -3,7 +3,7 @@ name: aggregator
 services:
 
   detection-aggregator:
-    image: starwitorg/detection-aggregator:0.1.0
+    image: starwitorg/detection-aggregator:0.1.5
     volumes:
       - ./detection-aggregator/detection-aggregator.settings.yaml:/code/settings.yaml
 
