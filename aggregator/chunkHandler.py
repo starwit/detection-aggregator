@@ -35,7 +35,7 @@ class ChunkHandler:
         same = same and self._compare_none(current.x, other.x)
         same = same and self._compare_none(current.y, other.y)
         
-        if (same and current.geo_coordinate is not None and other.geo_coordinate is not None):
+        if (same and self.chunk_diff.geo_coordinate is not None and current.geo_coordinate is not None and other.geo_coordinate is not None):
             same = same and current.geo_coordinate.latitude <= other.geo_coordinate.latitude < current.geo_coordinate.latitude + self.chunk_diff.geo_coordinate.latitude
             same = same and current.geo_coordinate.longitude <= other.geo_coordinate.longitude < current.geo_coordinate.longitude + self.chunk_diff.geo_coordinate.longitude
         
