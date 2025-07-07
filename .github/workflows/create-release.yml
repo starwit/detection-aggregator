@@ -24,6 +24,10 @@ jobs:
   pr-build-poetry:
     name: PR Build with Poetry
     runs-on: [self-hosted, linux, X64]
+    container:
+      image: starwitorg/base-python-image:0.0.7
+      volumes:
+          - /home/githubrunner/.cache/pypoetry:/root/.cache/pypoetry
 
     steps:
       #----------------------------------------------
@@ -34,6 +38,12 @@ jobs:
 
       - name: Install GH CLI
         uses: dev-hanz-ops/install-gh-cli-action@v0.2.0
+
+      - name: create new version in pyproject.toml
+        run: |
+          poetry version $VERSION
+        env:
+          VERSION: ${{ inputs.versionChoice }}
 
       - name: commit new version
         run: |
@@ -55,9 +65,6 @@ jobs:
         run: | 
           APP_VERSION=$(cat pyproject.toml | grep "version" | cut -d'=' -f2 | xargs echo -n)
           gh release create $APP_VERSION -F README.md --title "${APP_VERSION}"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ inputs.versionChoice }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
