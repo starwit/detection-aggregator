@@ -31,7 +31,7 @@ jobs:
       - name: Install project
         run: |
           poetry config cache-dir /root/.cache/pypoetry
-          bash -c ./start_make.sh
+          bash -c "export PATH=/root/.local/bin/:$PATH; make test"
 
   apt-build:
     name: package APT
@@ -48,13 +48,6 @@ jobs:
       - name: build apt package
         run: |
             echo "Build APT package"
-            export PATH=/root/.local/bin/:$PATH
-            bash -c ./start_make.sh
-            echo "VERSION=$(poetry version -s)" >> $GITHUB_ENV
+            bash -c "export PATH=/root/.local/bin/:$PATH; make build-deb"
             echo "Finish building APT package"
-      - name: test poetry builds
-        run: |
-            export PATH=/root/.local/bin/:$PATH
-            #poetry install
-            #poetry build  
 
