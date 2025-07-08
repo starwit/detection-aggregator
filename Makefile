@@ -8,7 +8,12 @@ install: check-settings
 check-settings:
 	./check_settings.sh
 
-build-deb: check-settings
+set-version:
+	$(eval VERSION := $(shell poetry version -s))
+	@echo $(VERSION)
+	sed -i -e "s/###RELEASE_VERSION###/$(VERSION)/" debian/changelog
+
+build-deb: check-settings set-version
 
 	poetry export --without-hashes --format=requirements.txt > requirements.txt
 	

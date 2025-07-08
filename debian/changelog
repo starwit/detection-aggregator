@@ -1,4 +1,4 @@
-detection-aggregator (0.1.16) unstable; urgency=medium
+detection-aggregator (###RELEASE_VERSION###) unstable; urgency=medium
 
   * Initial release.
 
