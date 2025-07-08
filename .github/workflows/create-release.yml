@@ -25,9 +25,12 @@ jobs:
     name: create new release
     runs-on: [self-hosted, linux, X64]
     container:
-      image: starwitorg/base-python-image:0.0.14
+      image: starwitorg/debian-packaging:0.0.2
       volumes:
-          - /home/githubrunner/.cache/pypoetry:/root/.cache/pypoetry
+        - /home/githubrunner/.cache/pypoetry:/root/.cache/pypoetry
+      env:
+        PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD_FLAT }}
+        GPG_KEY: ${{ secrets.OSSRH_GPG_SECRET_KEY_B64 }}
 
     steps:
       #----------------------------------------------
@@ -41,6 +44,7 @@ jobs:
         
       - name: create new version in pyproject.toml
         run: |
+          export PATH=/root/.local/bin/:$PATH
           poetry version $VERSION
         env:
           VERSION: ${{ inputs.versionChoice }}
@@ -61,10 +65,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: build apt package
+        run: |
+            echo "Build APT package"
+            bash -c "export PATH=/root/.local/bin/:$PATH; poetry self add poetry-plugin-export; make build-deb"
+            echo "Finish building APT package"
+
       - name: Create github release
         run: | 
           APP_VERSION=$(cat pyproject.toml | grep "version" | cut -d'=' -f2 | xargs echo -n) 
-          gh release create $APP_VERSION -F README.md --title "${APP_VERSION}" --target $(git branch --show-current)
+          gh release create $APP_VERSION -F README.md --title "${APP_VERSION}" --target $(git branch --show-current) ./target/*deb ./target/*.dsc
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
