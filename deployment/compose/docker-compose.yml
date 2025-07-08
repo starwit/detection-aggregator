@@ -1,0 +1,13 @@
+name: aggregator
+
+services:
+
+  detection-aggregator:
+    image: starwitorg/detection-aggregator:0.1.5
+    volumes:
+      - ./detection-aggregator/detection-aggregator.settings.yaml:/code/settings.yaml
+
+networks:
+  default:
+    name: sae
+    external: true
