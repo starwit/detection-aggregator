@@ -1,0 +1,14 @@
+log_level: DEBUG
+redis:
+  host: redis
+  port: 6379
+  stream_id: stream1
+  input_stream_prefix: geomapper
+  output_stream_prefix: aggregator
+chunk:
+  buffer_size: 3
+  time_in_ms: 2000
+  geo_coordinate:
+    latitude: 10
+    longitude: 10
+prometheus_port: 8000

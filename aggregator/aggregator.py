@@ -1,9 +1,9 @@
 import logging
-from typing import Any, Dict, NamedTuple
+from typing import Any
 
 from prometheus_client import Counter, Histogram, Summary
-from visionapi.sae_pb2 import SaeMessage, VideoFrame, Detection
-from visionapi.analytics_pb2 import DetectionCountMessage, DetectionCount
+from visionapi.sae_pb2 import SaeMessage
+from visionapi.analytics_pb2 import DetectionCountMessage
 from .chunk import Chunk
 from .chunkHandler import ChunkHandler
 

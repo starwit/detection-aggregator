@@ -5,8 +5,8 @@ __pycache__
 cache
 *.pt
 .vscode
-*.yaml
 !.github/workflows/*.yaml
+settings.yaml
 !settings.template.yaml
 .python-version
 target
