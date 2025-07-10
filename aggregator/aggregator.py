@@ -50,6 +50,11 @@ class Aggregator:
     def get(self, input_proto: bytes) -> bytes:
         sae_msg = self._unpack_proto(input_proto)
         logger.debug('Received SAE message from pipeline')
+        if (sae_msg is None or 
+            sae_msg.detections is None or 
+            len(sae_msg.detections) == 0):
+            logger.debug('No detections in SAE message, skipping')
+            return None
         return self._write_to_buffer(sae_msg)
     
     
