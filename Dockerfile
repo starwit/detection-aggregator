@@ -1,4 +1,4 @@
-FROM starwitorg/base-python-image:0.0.14 AS build
+FROM starwitorg/base-python-image:0.0.15 AS build
 
 RUN apt update && apt install --no-install-recommends -y
 

@@ -1,16 +1,16 @@
 name: pr-build
 
 on:
-    pull_request:
-      branches: [ main ]
-    workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   pr-build-poetry:
     name: PR Build with Poetry
     runs-on: [self-hosted, linux, X64]
     container:
-        image: starwitorg/base-python-image:0.0.14
+        image: starwitorg/base-python-image:0.0.15
         volumes:
             - /home/githubrunner/.cache/pypoetry:/root/.cache/pypoetry
     steps:
