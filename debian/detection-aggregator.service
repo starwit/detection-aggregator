@@ -8,9 +8,6 @@ WorkingDirectory=/opt/starwit/detection-aggregator
 ExecStart=/usr/local/bin/detection-aggregator
 Restart=always
 RestartSec=5
-StandardOutput=journal+console
-StandardError=journal+console
-SyslogIdentifier=detection-aggregator
 
 [Install]
 WantedBy=multi-user.target
