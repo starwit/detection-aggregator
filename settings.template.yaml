@@ -8,6 +8,7 @@ redis:
 chunk:
   buffer_size: 3
   time_in_ms: 2000
+  use_camera_coordinates: True
   geo_coordinate:
     latitude: 10
     longitude: 10
