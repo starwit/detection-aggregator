@@ -49,17 +49,17 @@ def test_aggregate2_msg(agg2):
     sae_msg: SaeMessage = SaeMessage()
     sae_msg.ParseFromString(sae_message_bytes)
 
-    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
+    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, None)
     
     for detection in sae_msg.detections:
         detection.class_id = 1
-    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
+    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, None)
     
     for detection in sae_msg.detections:
         detection.class_id = 3
-    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
+    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, None)
     
-    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms + agg2.config.chunk.time_in_ms + 1, sae_msg.detections)
+    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms + agg2.config.chunk.time_in_ms + 1, sae_msg.detections, None)
     pass
 
     # Two different times

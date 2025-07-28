@@ -49,7 +49,7 @@ class Aggregator:
     @GET_DURATION.time()
     def get(self, input_proto: bytes) -> bytes:
         sae_msg = self._unpack_proto(input_proto)
-        logger.debug('Received SAE message from pipeline')
+        #logger.debug('Received SAE message from pipeline')
         if (sae_msg is None or 
             sae_msg.detections is None or 
             len(sae_msg.detections) == 0):
@@ -80,9 +80,12 @@ class Aggregator:
         if len(ts_keys) > 0:
             start_ts = sorted(ts_keys)[-1]
         key = self._chunk_handler.get_ts_period_start(start_ts, sae_msg.frame.timestamp_utc_ms)
+        coordinates = None
         
+        if self.config.chunk.use_camera_coordinates :
+            coordinates = sae_msg.frame.camera_coordinates
         # aggregate detections to chunks
-        self._aggregate_msg(key, sae_msg.detections)
+        self._aggregate_msg(key, sae_msg.detections, coordinates)
         
         if len(self._timeslot_buffer) >= self._buffer_size:
             logger.debug(f'Buffer size {len(self._timeslot_buffer)} reached, writing to redis')
@@ -144,11 +147,13 @@ class Aggregator:
         None: This method updates the internal state and does not return 
                 any value.
     """
-    def _aggregate_msg(self, ts_in_ms: int, detections) -> None:
+    def _aggregate_msg(self, ts_in_ms: int, detections, coordinates) -> None:
             counts = self._timeslot_buffer.get(ts_in_ms, {})
             chunks = counts.keys()
             for detection in detections:
                 newChunk = Chunk(ts_in_ms, detection)
+                if self.config.chunk.use_camera_coordinates:
+                    newChunk.geo_coordinate.CopyFrom(coordinates)
                 added = False
                 for chunk in chunks:
                     newChunk = self._chunk_handler.aggregateChunk(chunk, newChunk)

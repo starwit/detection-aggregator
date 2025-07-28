@@ -19,6 +19,7 @@ class Coordinates(BaseModel):
 class ChunkConfig(BaseModel):
     buffer_size: int = 3
     time_in_ms: int = 1000
+    use_camera_coordinates: bool = False 
     geo_coordinate: Coordinates = Coordinates()
     x: float = None
     y: float = None
