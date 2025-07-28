@@ -11,10 +11,12 @@ def config():
 
 @pytest.fixture
 def agg(config):
+    config.chunk.use_camera_coordinates = False
     return Aggregator(config)
 
 @pytest.fixture
 def agg2(config):
+    config.chunk.use_camera_coordinates = False
     return Aggregator(config)
    
 def test_aggregate_msg(agg):
@@ -28,7 +30,7 @@ def test_aggregate_msg(agg):
     for detection in sae_msg.detections:
         print(detection)
     
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, None)
     counts = agg._timeslot_buffer.get(sae_msg.frame.timestamp_utc_ms, {})
     pass
 
@@ -147,8 +149,8 @@ def test_aggregate_multiple_timeslots(agg):
     sae_msg.ParseFromString(sae_message_bytes)
     
     # Aggregate in different timeslots
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms + 1000, sae_msg.detections)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, None)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms + 1000, sae_msg.detections, None)
     
     result = len(agg._timeslot_buffer)
     expected = 2
