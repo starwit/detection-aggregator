@@ -1,4 +1,11 @@
+
 detection-aggregator (###RELEASE_VERSION###) unstable; urgency=medium
+
+  * Add type info
+
+ -- Anett Hübner <foss@starwit.de>  Wed, 06 Aug 2025 00:00:00 +0000
+
+detection-aggregator (0.0.2) unstable; urgency=medium
 
   * Initial release.
 
