@@ -1,7 +1,7 @@
 [tool.poetry]
 package-mode = false
 name = "aggregator"
-version = "0.2.0"
+version = "0.2.1"
 description = "This component collects geomapped data and creates time/space aggregation."
 authors = ["witchpou <anett.huebner@starwit.de>"]
 license = "AGPLv3"
