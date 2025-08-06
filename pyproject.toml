@@ -2,14 +2,14 @@
 package-mode = false
 name = "aggregator"
 version = "0.2.0"
-description = "This component consumes Anomalies from Valkey, save videos and sends reporting data to receivers like ai-cockpit."
+description = "This component collects geomapped data and creates time/space aggregation."
 authors = ["witchpou <anett.huebner@starwit.de>"]
 license = "AGPLv3"
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-visionapi = { git = "https://github.com/starwit/vision-api.git", subdirectory = "python/visionapi", tag = "3.2.2" }
+visionapi = { git = "https://github.com/starwit/vision-api.git", subdirectory = "python/visionapi", tag = "3.4.0" }
 visionlib = { git = "https://github.com/starwit/vision-lib.git", subdirectory = "python", tag = "0.11.2" }
 redis = "5.3.0"
 pydantic = "2.11.7"

@@ -3,6 +3,7 @@ from typing import Any
 
 from prometheus_client import Counter, Histogram, Summary
 from visionapi.sae_pb2 import SaeMessage
+from visionapi.common_pb2 import MessageType
 from visionapi.analytics_pb2 import DetectionCountMessage
 from .chunk import Chunk
 from .chunkHandler import ChunkHandler
@@ -104,6 +105,7 @@ class Aggregator:
 
     def _create_detectioncount_msg(self, timeslot, first_chunk_counts):
         dcm = DetectionCountMessage()
+        dcm.type = MessageType.DETECTION_COUNT
         dcm.timestamp_utc_ms = timeslot
 
         for chunk in first_chunk_counts.keys():
