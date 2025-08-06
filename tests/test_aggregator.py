@@ -11,12 +11,10 @@ def config():
 
 @pytest.fixture
 def agg(config):
-    config.chunk.use_camera_coordinates = False
     return Aggregator(config)
 
 @pytest.fixture
 def agg2(config):
-    config.chunk.use_camera_coordinates = False
     return Aggregator(config)
    
 def test_aggregate_msg(agg):
@@ -30,7 +28,7 @@ def test_aggregate_msg(agg):
     for detection in sae_msg.detections:
         print(detection)
     
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, None)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
     counts = agg._timeslot_buffer.get(sae_msg.frame.timestamp_utc_ms, {})
     pass
 
@@ -51,17 +49,17 @@ def test_aggregate2_msg(agg2):
     sae_msg: SaeMessage = SaeMessage()
     sae_msg.ParseFromString(sae_message_bytes)
 
-    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, None)
+    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
     
     for detection in sae_msg.detections:
         detection.class_id = 1
-    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, None)
+    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
     
     for detection in sae_msg.detections:
         detection.class_id = 3
-    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, None)
+    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
     
-    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms + agg2.config.chunk.time_in_ms + 1, sae_msg.detections, None)
+    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms + agg2.config.chunk.time_in_ms + 1, sae_msg.detections)
     pass
 
     # Two different times
@@ -149,8 +147,8 @@ def test_aggregate_multiple_timeslots(agg):
     sae_msg.ParseFromString(sae_message_bytes)
     
     # Aggregate in different timeslots
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, None)
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms + 1000, sae_msg.detections, None)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms + 1000, sae_msg.detections)
     
     result = len(agg._timeslot_buffer)
     expected = 2
