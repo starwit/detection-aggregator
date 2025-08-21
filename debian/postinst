@@ -25,7 +25,7 @@ EOF
 
     # link settings file from etc
     cd /opt/starwit/detection-aggregator
-    ln -s /etc/starwit/detection-aggregator/settings.yaml settings.yaml
+    ln -sf /etc/starwit/detection-aggregator/settings.yaml settings.yaml
 
     systemctl daemon-reload
     systemctl start detection-aggregator.service        
