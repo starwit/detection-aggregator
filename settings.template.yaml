@@ -1,5 +1,5 @@
 log_level: INFO
-skip_empty_detections: False
+skip_empty_detections: True
 redis:
   host: redis
   port: 6379

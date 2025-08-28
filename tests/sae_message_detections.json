@@ -1,0 +1,54 @@
+{
+  "frame": {
+    "sourceId": "stream1",
+    "timestampUtcMs": "1756197742869",
+    "shape": {
+      "height": 720,
+      "width": 1280,
+      "channels": 3
+    },
+    "cameraLocation": {
+      "latitude": 52.4235985667,
+      "longitude": 10.8691007667
+    },
+    "frameData": "",
+    "frameDataJpeg": ""
+  },
+  "detections": [
+    {
+      "boundingBox": {
+        "minX": 0.50533116,
+        "minY": 0.14420868,
+        "maxX": 0.53373015,
+        "maxY": 0.1780711
+      },
+      "confidence": 0.68281114,
+      "geoCoordinate": {
+        "latitude": 52.4235985667,
+        "longitude": 10.8691007667
+      },
+      "classId": 0,
+      "objectId": ""
+    },
+    {
+      "boundingBox": {
+        "minX": 0.60103357,
+        "minY": 0.24646692,
+        "maxX": 0.6482618,
+        "maxY": 0.29569092
+      },
+      "confidence": 0.32397893,
+      "geoCoordinate": {
+        "latitude": 52.4235985667,
+        "longitude": 10.8691007667
+      },
+      "classId": 0,
+      "objectId": ""
+    }
+  ],
+  "metrics": {
+    "detectionInferenceTimeUs": 78295,
+    "trackingInferenceTimeUs": 0
+  },
+  "type": "SAE"
+}

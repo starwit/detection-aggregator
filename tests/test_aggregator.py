@@ -1,21 +1,39 @@
+import json
 import pytest
 
 from aggregator.aggregator import Aggregator
 from aggregator.aggregator import AggregatorConfig
 from visionapi.sae_pb2 import SaeMessage
-from visionapi.analytics_pb2 import DetectionCountMessage, DetectionCount
+from google.protobuf.json_format import Parse
+from visionapi.analytics_pb2 import DetectionCountMessage
 
 @pytest.fixture
 def config():
-    return AggregatorConfig()
+    cfg = AggregatorConfig()
+    cfg.chunk.buffer_size = 3
+    cfg.chunk.time_in_ms = 20000
+    cfg.skip_empty_detections = False
+    cfg.chunk.geo_coordinate.latitude = 10
+    cfg.chunk.geo_coordinate.longitude = 10
+    return cfg
+
+@pytest.fixture
+def config_no_agg():
+    cfg = AggregatorConfig()
+    cfg.chunk.buffer_size = 1
+    cfg.chunk.time_in_ms = 1
+    cfg.skip_empty_detections = False
+    cfg.chunk.geo_coordinate.latitude = 0
+    cfg.chunk.geo_coordinate.longitude = 0
+    return cfg
 
 @pytest.fixture
 def agg(config):
     return Aggregator(config)
 
 @pytest.fixture
-def agg2(config):
-    return Aggregator(config)
+def agg_no_agg(config_no_agg):
+    return Aggregator(config_no_agg)
    
 def test_aggregate_msg(agg):
     
@@ -42,32 +60,32 @@ def test_aggregate_msg(agg):
     expected = len(sae_msg.detections)
     assert result == expected, f"Expected {expected}, but got {result}"
     
-def test_aggregate2_msg(agg2):
+def test_aggregate2_msg(agg):
     with open('tests/sae_message.bin', 'rb') as f:
         sae_message_bytes = f.read()
     
     sae_msg: SaeMessage = SaeMessage()
     sae_msg.ParseFromString(sae_message_bytes)
 
-    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
     
     for detection in sae_msg.detections:
         detection.class_id = 1
-    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
     
     for detection in sae_msg.detections:
         detection.class_id = 3
-    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
     
-    agg2._aggregate_msg(sae_msg.frame.timestamp_utc_ms + agg2.config.chunk.time_in_ms + 1, sae_msg.detections)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms + agg.config.chunk.time_in_ms + 1, sae_msg.detections)
     pass
 
     # Two different times
-    result = len(agg2._timeslot_buffer)
+    result = len(agg._timeslot_buffer)
     expected = 2
     assert result == expected, f"Expected {expected}, but got {result}"
     
-    counts = agg2._timeslot_buffer.get(sae_msg.frame.timestamp_utc_ms, {})
+    counts = agg._timeslot_buffer.get(sae_msg.frame.timestamp_utc_ms, {})
     result = len(counts)
     expected = 3
     assert result == expected, f"Expected {expected}, but got {result}"
@@ -187,3 +205,22 @@ def test_get_method(agg):
     count = dc.count
     expected_count = len(sae_msg.detections)
     assert count == expected_count, f"Expected total count {expected_count}, but got {sum(counts.values())}"
+    
+def test_sae_message_detections(agg_no_agg):
+    with open('tests/sae_message_detections.json', 'rb') as f:
+        sae_message = f.read()   
+        
+    json_obj = json.loads(sae_message)
+    sae_msg: SaeMessage = Parse(sae_message, SaeMessage())
+    assert isinstance(sae_msg, SaeMessage), "Parsed message is not of type SaeMessage"
+    assert len(sae_msg.detections) > 0, "No detections found in parsed message"
+    for detection in sae_msg.detections:
+        print(detection)
+    msg: DetectionCountMessage = DetectionCountMessage()
+    msg.ParseFromString(agg_no_agg._write_to_buffer(sae_msg))
+    assert msg is not None, "Expected DetectionCountMessage to be returned"
+    
+    count = msg.detection_counts[0].count
+    expected_count = len(sae_msg.detections)
+    assert count == expected_count, f"Expected total count {expected_count}, but got {count}"
+    
