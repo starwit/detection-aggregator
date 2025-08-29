@@ -74,7 +74,7 @@ class Aggregator:
                                         buffer size limit is reached, 
                                         otherwise returns None.
     """
-    def _write_to_buffer(self, sae_msg: SaeMessage) -> DetectionCountMessage | None:
+    def _write_to_buffer(self, sae_msg: SaeMessage) -> bytes | None:
         # determine appropriate timeslot
         ts_keys = list(self._timeslot_buffer)
         start_ts = None

@@ -36,11 +36,11 @@ class ChunkHandler:
         same = same and self._compare_none(current.y, other.y)
         
         if (same and self.chunk_diff.geo_coordinate is not None and current.geo_coordinate is not None and other.geo_coordinate is not None):
-            sameLatPlus = same and current.geo_coordinate.latitude <= other.geo_coordinate.latitude < (current.geo_coordinate.latitude + self.chunk_diff.geo_coordinate.latitude)
-            sameLatMinus = same and (current.geo_coordinate.latitude - self.chunk_diff.geo_coordinate.latitude) <= other.geo_coordinate.latitude < current.geo_coordinate.latitude
+            sameLatPlus = same and current.geo_coordinate.latitude <= other.geo_coordinate.latitude <= (current.geo_coordinate.latitude + self.chunk_diff.geo_coordinate.latitude)
+            sameLatMinus = same and (current.geo_coordinate.latitude - self.chunk_diff.geo_coordinate.latitude) <= other.geo_coordinate.latitude <= current.geo_coordinate.latitude
             same = same and (sameLatPlus or sameLatMinus)
-            saemLongitudePlus = same and current.geo_coordinate.longitude <= other.geo_coordinate.longitude < (current.geo_coordinate.longitude + self.chunk_diff.geo_coordinate.longitude)
-            sameLongitudeMinus = same and (current.geo_coordinate.longitude - self.chunk_diff.geo_coordinate.longitude) <= other.geo_coordinate.longitude < current.geo_coordinate.longitude
+            saemLongitudePlus = same and current.geo_coordinate.longitude <= other.geo_coordinate.longitude <= (current.geo_coordinate.longitude + self.chunk_diff.geo_coordinate.longitude)
+            sameLongitudeMinus = same and (current.geo_coordinate.longitude - self.chunk_diff.geo_coordinate.longitude) <= other.geo_coordinate.longitude <= current.geo_coordinate.longitude
             same = same and (saemLongitudePlus or sameLongitudeMinus)
         
         #if (same and self.chunk_diff.x is not None and self.chunk_diff.y is not None):
