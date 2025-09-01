@@ -204,7 +204,7 @@ def test_get_method(agg):
     dc = detection_count_msg.detection_counts[0]
     count = dc.count
     expected_count = len(sae_msg.detections)
-    assert count == expected_count, f"Expected total count {expected_count}, but got {sum(counts.values())}"
+    assert count == expected_count, f"Expected total count {expected_count}, but got {count}"
     
 def test_sae_message_detections(agg_no_agg):
     with open('tests/sae_message_detections.json', 'rb') as f:
