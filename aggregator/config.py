@@ -26,7 +26,6 @@ class ChunkConfig(BaseModel):
 class AggregatorConfig(BaseSettings):
     log_level: LogLevel = LogLevel.WARNING
     redis: RedisConfig = RedisConfig()
-    skip_empty_detections: bool = True
     chunk: ChunkConfig = ChunkConfig()
     prometheus_port: Annotated[int, Field(ge=1024, le=65536)] = 8000
 

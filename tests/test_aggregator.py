@@ -12,7 +12,6 @@ def config():
     cfg = AggregatorConfig()
     cfg.chunk.buffer_size = 3
     cfg.chunk.time_in_ms = 20000
-    cfg.skip_empty_detections = True
     cfg.chunk.geo_coordinate.latitude = 10
     cfg.chunk.geo_coordinate.longitude = 10
     return cfg
@@ -22,7 +21,6 @@ def config_no_agg():
     cfg = AggregatorConfig()
     cfg.chunk.buffer_size = 1
     cfg.chunk.time_in_ms = 1
-    cfg.skip_empty_detections = False
     cfg.chunk.geo_coordinate.latitude = 0
     cfg.chunk.geo_coordinate.longitude = 0
     return cfg
@@ -46,7 +44,7 @@ def test_aggregate_msg(agg):
     for detection in sae_msg.detections:
         print(detection)
     
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, sae_msg.model_metadata.class_names)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
     counts = agg._timeslot_buffer.get(sae_msg.frame.timestamp_utc_ms, {})
     pass
 
@@ -67,17 +65,17 @@ def test_aggregate2_msg(agg):
     sae_msg: SaeMessage = SaeMessage()
     sae_msg.ParseFromString(sae_message_bytes)
 
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, sae_msg.model_metadata.class_names)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
 
     for detection in sae_msg.detections:
         detection.class_id = 1
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, sae_msg.model_metadata.class_names)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
     
     for detection in sae_msg.detections:
         detection.class_id = 3
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, sae_msg.model_metadata.class_names)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
     
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms + agg.config.chunk.time_in_ms + 1, sae_msg.detections, sae_msg.model_metadata.class_names)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms + agg.config.chunk.time_in_ms + 1, sae_msg.detections)
     pass
 
     # Two different times
@@ -165,8 +163,8 @@ def test_aggregate_multiple_timeslots(agg):
     sae_msg.ParseFromString(sae_message_bytes)
     
     # Aggregate in different timeslots
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, sae_msg.model_metadata.class_names)
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms + 1000, sae_msg.detections, sae_msg.model_metadata.class_names)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms + 1000, sae_msg.detections)
     
     result = len(agg._timeslot_buffer)
     expected = 2
