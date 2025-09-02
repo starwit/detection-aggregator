@@ -47,8 +47,14 @@
     }
   ],
   "metrics": {
-    "detectionInferenceTimeUs": 78295,
+    "detectionInferenceTimeUs": 135888,
     "trackingInferenceTimeUs": 0
+  },
+  "modelMetadata": {
+    "classNames": {
+      "0": "waste",
+      "1": "cigarette"
+    }
   },
   "type": "SAE"
 }

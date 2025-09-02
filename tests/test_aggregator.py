@@ -12,7 +12,7 @@ def config():
     cfg = AggregatorConfig()
     cfg.chunk.buffer_size = 3
     cfg.chunk.time_in_ms = 20000
-    cfg.skip_empty_detections = False
+    cfg.skip_empty_detections = True
     cfg.chunk.geo_coordinate.latitude = 10
     cfg.chunk.geo_coordinate.longitude = 10
     return cfg
@@ -46,7 +46,7 @@ def test_aggregate_msg(agg):
     for detection in sae_msg.detections:
         print(detection)
     
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, sae_msg.model_metadata.class_names)
     counts = agg._timeslot_buffer.get(sae_msg.frame.timestamp_utc_ms, {})
     pass
 
@@ -67,17 +67,17 @@ def test_aggregate2_msg(agg):
     sae_msg: SaeMessage = SaeMessage()
     sae_msg.ParseFromString(sae_message_bytes)
 
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
-    
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, sae_msg.model_metadata.class_names)
+
     for detection in sae_msg.detections:
         detection.class_id = 1
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, sae_msg.model_metadata.class_names)
     
     for detection in sae_msg.detections:
         detection.class_id = 3
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, sae_msg.model_metadata.class_names)
     
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms + agg.config.chunk.time_in_ms + 1, sae_msg.detections)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms + agg.config.chunk.time_in_ms + 1, sae_msg.detections, sae_msg.model_metadata.class_names)
     pass
 
     # Two different times
@@ -151,7 +151,7 @@ def test_packed_proto(agg):
     agg._write_to_buffer(sae_msg)
     counts = agg._timeslot_buffer.get(sae_msg.frame.timestamp_utc_ms, {})
     
-    detection_count_msg = agg._create_detectioncount_msg(sae_msg.frame.timestamp_utc_ms, counts)
+    detection_count_msg = agg._create_detectioncount_msg(sae_msg.frame.timestamp_utc_ms, counts, sae_msg.model_metadata.class_names)
     packed_bytes = agg._pack_proto(detection_count_msg)
     
     assert isinstance(packed_bytes, bytes), "Packed message is not of type bytes"
@@ -165,8 +165,8 @@ def test_aggregate_multiple_timeslots(agg):
     sae_msg.ParseFromString(sae_message_bytes)
     
     # Aggregate in different timeslots
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections)
-    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms + 1000, sae_msg.detections)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms, sae_msg.detections, sae_msg.model_metadata.class_names)
+    agg._aggregate_msg(sae_msg.frame.timestamp_utc_ms + 1000, sae_msg.detections, sae_msg.model_metadata.class_names)
     
     result = len(agg._timeslot_buffer)
     expected = 2
@@ -217,10 +217,15 @@ def test_sae_message_detections(agg_no_agg):
     for detection in sae_msg.detections:
         print(detection)
     msg: DetectionCountMessage = DetectionCountMessage()
-    msg.ParseFromString(agg_no_agg._write_to_buffer(sae_msg))
+    result = agg_no_agg._write_to_buffer(sae_msg)
+    msg.ParseFromString(result)
     assert msg is not None, "Expected DetectionCountMessage to be returned"
     
     count = msg.detection_counts[0].count
     expected_count = len(sae_msg.detections)
+    assert msg.detection_counts[0].class_id == 0, f"Expected class_id 0, but got {msg.detection_counts[0].class_id}"
+    assert msg.detection_counts[0].class_name == "waste", f"Expected class_name 'waste', but got {msg.detection_counts[0].class_name}"
     assert count == expected_count, f"Expected total count {expected_count}, but got {count}"
+    
+
     

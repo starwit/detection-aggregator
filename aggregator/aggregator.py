@@ -83,7 +83,7 @@ class Aggregator:
         key = self._chunk_handler.get_ts_period_start(start_ts, sae_msg.frame.timestamp_utc_ms)
         
         # aggregate detections to chunks
-        self._aggregate_msg(key, sae_msg.detections)
+        self._aggregate_msg(key, sae_msg.detections, sae_msg.model_metadata.class_names)
         
         if len(self._timeslot_buffer) >= self._buffer_size:
             logger.debug(f'Buffer size {len(self._timeslot_buffer)} reached, writing to redis')
@@ -94,13 +94,13 @@ class Aggregator:
             
             # remove from buffer
             self._timeslot_buffer.pop(first_timeslot, None)
-            dcm = self._create_detectioncount_msg(first_timeslot, first_chunk_counts)
+            dcm = self._create_detectioncount_msg(first_timeslot, first_chunk_counts, class_names=sae_msg.model_metadata.class_names)
             
             # return earliest chunk as DetectionCountMessage
             return self._pack_proto(dcm)
         return None        
 
-    def _create_detectioncount_msg(self, timeslot, first_chunk_counts):
+    def _create_detectioncount_msg(self, timeslot, first_chunk_counts, class_names) -> DetectionCountMessage:
         dcm = DetectionCountMessage()
         dcm.type = MessageType.DETECTION_COUNT
         dcm.timestamp_utc_ms = timeslot
@@ -108,11 +108,12 @@ class Aggregator:
         for chunk in first_chunk_counts.keys():
             detection_count = dcm.detection_counts.add()
             detection_count.class_id = chunk.class_id
+            detection_count.class_name = class_names.get(chunk.class_id, "None")
             detection_count.count = first_chunk_counts.get(chunk, 1)
             if chunk.geo_coordinate is not None:
                 detection_count.location.latitude = chunk.geo_coordinate.latitude
                 detection_count.location.longitude = chunk.geo_coordinate.longitude
-            #if chunk.x is not None and chunk.y is not None:
+            #if chunk.x is not None and chunk.y is not None:_create_detectioncount_msg
             #    detection_count.location.latitude = chunk.x
             #    detection_count.location.longitude = chunk.y
         return dcm
@@ -146,7 +147,7 @@ class Aggregator:
         None: This method updates the internal state and does not return 
                 any value.
     """
-    def _aggregate_msg(self, ts_in_ms: int, detections) -> None:
+    def _aggregate_msg(self, ts_in_ms: int, detections, class_names) -> None:
             counts = self._timeslot_buffer.get(ts_in_ms, {})
             chunks = counts.keys()
             for detection in detections:
