@@ -51,9 +51,9 @@ class Aggregator:
     def get(self, input_proto: bytes) -> bytes:
         sae_msg = self._unpack_proto(input_proto)
         #logger.debug('Received SAE message from pipeline')
-        if (self.config.skip_empty_detections and (sae_msg is None or 
+        if (sae_msg is None or 
             sae_msg.detections is None or 
-            len(sae_msg.detections) == 0)):
+            len(sae_msg.detections) == 0):
             logger.debug('No detections in SAE message, skipping')
             return None
         return self._write_to_buffer(sae_msg)
@@ -94,13 +94,13 @@ class Aggregator:
             
             # remove from buffer
             self._timeslot_buffer.pop(first_timeslot, None)
-            dcm = self._create_detectioncount_msg(first_timeslot, first_chunk_counts)
+            dcm = self._create_detectioncount_msg(first_timeslot, first_chunk_counts, class_names=sae_msg.model_metadata.class_names)
             
             # return earliest chunk as DetectionCountMessage
             return self._pack_proto(dcm)
         return None        
 
-    def _create_detectioncount_msg(self, timeslot, first_chunk_counts):
+    def _create_detectioncount_msg(self, timeslot, first_chunk_counts, class_names) -> DetectionCountMessage:
         dcm = DetectionCountMessage()
         dcm.type = MessageType.DETECTION_COUNT
         dcm.timestamp_utc_ms = timeslot
@@ -108,6 +108,7 @@ class Aggregator:
         for chunk in first_chunk_counts.keys():
             detection_count = dcm.detection_counts.add()
             detection_count.class_id = chunk.class_id
+            detection_count.class_name = class_names.get(chunk.class_id, "None")
             detection_count.count = first_chunk_counts.get(chunk, 1)
             if chunk.geo_coordinate is not None:
                 detection_count.location.latitude = chunk.geo_coordinate.latitude
