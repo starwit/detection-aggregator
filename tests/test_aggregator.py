@@ -225,5 +225,3 @@ def test_sae_message_detections(agg_no_agg):
     assert msg.detection_counts[0].class_name == "waste", f"Expected class_name 'waste', but got {msg.detection_counts[0].class_name}"
     assert count == expected_count, f"Expected total count {expected_count}, but got {count}"
     
-
-    
